@@ -4,8 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
   <meta name="theme-color" content="#343541"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <title>Athena Chat IA</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -16,9 +14,7 @@
     .htitle svg{width:24px;height:24px}
     .hactions{display:flex;align-items:center;gap:6px}
     .ibtn{background:transparent;border:none;color:#ececf1;width:36px;height:36px;border-radius:8px;display:grid;place-items:center;cursor:pointer;padding:6px;transition:background .2s}
-    .ibtn:hover{background:#444654}
-    .ibtn:active{background:#565869}
-    .ibtn svg{width:20px;height:20px}
+    .ibtn:hover{background:#444654}.ibtn:active{background:#565869}.ibtn svg{width:20px;height:20px}
     #sbadge{font-size:.65rem;padding:3px 10px;border-radius:10px;font-weight:500;display:flex;align-items:center;gap:4px;white-space:nowrap}
     #sbadge.ok{background:#19c37d;color:#0b1412}
     #sbadge.searching{background:#d69e2e;color:#0b1412;animation:pulse 1s infinite}
@@ -28,49 +24,38 @@
     #chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
     .msg{display:flex;gap:10px;max-width:90%;animation:up .2s}
     @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .msg.bot{align-self:flex-start}
-    .msg.user{align-self:flex-end;flex-direction:row-reverse}
+    .msg.bot{align-self:flex-start}.msg.user{align-self:flex-end;flex-direction:row-reverse}
     .av{width:32px;height:32px;border-radius:6px;display:grid;place-items:center;flex-shrink:0}
-    .msg.bot .av{background:#19c37d}
-    .msg.bot .av svg{width:16px;height:16px;color:#0b1412}
-    .msg.user .av{background:#5436da}
-    .msg.user .av svg{width:16px;height:16px;color:#fff}
+    .msg.bot .av{background:#19c37d}.msg.bot .av svg{width:16px;height:16px;color:#0b1412}
+    .msg.user .av{background:#5436da}.msg.user .av svg{width:16px;height:16px;color:#fff}
     .mc{padding:12px 14px;border-radius:16px;word-break:break-word;line-height:1.6;font-size:.95rem}
     .msg.bot .mc{background:#2b2d31;border-top-left-radius:4px}
     .msg.user .mc{background:#444654;border-top-right-radius:4px}
-    .mc b,.mc strong{font-weight:600;color:#fff}
-    .mc i,.mc em{font-style:italic;color:#c5c5d2}
+    .mc b,.mc strong{font-weight:600;color:#fff}.mc i,.mc em{font-style:italic;color:#c5c5d2}
     .mc code{background:#1e1f29;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:.9em;color:#e0e0ff}
     .mc pre{background:#1e1f29;padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;font-family:monospace;font-size:.9em}
     .mc pre code{background:none;padding:0;color:#a0d4ff}
-    .mc ul,.mc ol{padding-left:20px;margin:8px 0}
-    .mc li{margin:4px 0}
-    .mc a{color:#6db3f2;text-decoration:none}
-    .mc a:hover{text-decoration:underline}
+    .mc ul,.mc ol{padding-left:20px;margin:8px 0}.mc li{margin:4px 0}
+    .mc a{color:#6db3f2;text-decoration:none}.mc a:hover{text-decoration:underline}
     .mc hr{border:none;border-top:1px solid #4d4d4f;margin:12px 0}
     .mc blockquote{border-left:3px solid #19c37d;padding-left:12px;margin:8px 0;color:#a0a0b0}
     .meta{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:.7rem;color:#8e8ea0}
     .ma{display:flex;gap:2px;margin-left:auto}
     .mab{background:transparent;border:none;color:#8e8ea0;width:22px;height:22px;border-radius:4px;display:grid;place-items:center;cursor:pointer;padding:2px;transition:color .2s,background .2s}
-    .mab:hover{color:#ececf1;background:#444654}
-    .mab svg{width:13px;height:13px}
+    .mab:hover{color:#ececf1;background:#444654}.mab svg{width:13px;height:13px}
     #ia{padding:10px 16px 14px;background:#343541;border-top:1px solid #4d4d4f;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,14px)}
     #ebanner{background:#7b2d3a;color:#fff;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:.82rem;display:none}
     #ebanner.s{display:block;animation:up .3s}
     #iwrap{display:flex;align-items:flex-end;gap:8px;background:#40414f;border-radius:14px;padding:6px 10px;border:1px solid #565869;transition:border-color .2s,box-shadow .2s}
     #iwrap:focus-within{border-color:#19c37d;box-shadow:0 0 0 2px rgba(25,195,125,.2)}
     #inp{flex:1;background:transparent;border:none;color:#ececf1;font-size:1rem;resize:none;max-height:120px;outline:none;padding:6px 2px;line-height:1.4;min-height:24px}
-    #inp::placeholder{color:#8e8ea0}
-    #cc{font-size:.65rem;color:#8e8ea0;text-align:right;margin-top:3px}
+    #inp::placeholder{color:#8e8ea0}#cc{font-size:.65rem;color:#8e8ea0;text-align:right;margin-top:3px}
     #sbtn{background:#19c37d;border:none;color:#0b1412;width:36px;height:36px;border-radius:8px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:background .2s,transform .1s}
-    #sbtn:hover{background:#1a9f66}
-    #sbtn:active{transform:scale(.95)}
-    #sbtn:disabled{background:#565869;cursor:not-allowed;transform:none;opacity:.5}
-    #sbtn svg{width:18px;height:18px}
+    #sbtn:hover{background:#1a9f66}#sbtn:active{transform:scale(.95)}
+    #sbtn:disabled{background:#565869;cursor:not-allowed;transform:none;opacity:.5}#sbtn svg{width:18px;height:18px}
     .type{display:flex;gap:4px;padding:12px 14px;background:#2b2d31;border-radius:16px;border-top-left-radius:4px;width:fit-content;align-self:flex-start}
     .type span{width:6px;height:6px;background:#8e8ea0;border-radius:50%;animation:tb 1.4s infinite ease-in-out}
-    .type span:nth-child(1){animation-delay:-.32s}
-    .type span:nth-child(2){animation-delay:-.16s}
+    .type span:nth-child(1){animation-delay:-.32s}.type span:nth-child(2){animation-delay:-.16s}
     @keyframes tb{0%,80%,100%{transform:scale(.7);opacity:.5}40%{transform:scale(1.2);opacity:1}}
     .wel{text-align:center;padding:30px 20px;color:#8e8ea0}
     .wel svg{width:44px;height:44px;margin-bottom:14px;opacity:.7}
@@ -83,17 +68,13 @@
     .mhead h3{font-size:1rem;font-weight:600}
     .mlist{display:flex;flex-direction:column;gap:3px}
     .mitem{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:#2b2d31;cursor:pointer;font-size:.92rem;transition:background .15s}
-    .mitem:hover{background:#444654}
-    .mitem svg{width:18px;height:18px;flex-shrink:0}
-    .mitem.danger{color:#f56565}
-    .mitem.danger:hover{background:#4a2d35}
+    .mitem:hover{background:#444654}.mitem svg{width:18px;height:18px;flex-shrink:0}
+    .mitem.danger{color:#f56565}.mitem.danger:hover{background:#4a2d35}
     #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;gap:6px;pointer-events:none}
     .tst{background:#202123;color:#ececf1;padding:8px 14px;border-radius:8px;font-size:.85rem;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:6px;animation:up .3s,fo .3s 2.5s forwards;pointer-events:auto;max-width:85vw}
     .tst svg{width:16px;height:16px;flex-shrink:0}
     @keyframes fo{to{opacity:0;transform:translateY(-8px)}}
-    ::-webkit-scrollbar{width:5px}
-    ::-webkit-scrollbar-track{background:transparent}
-    ::-webkit-scrollbar-thumb{background:#565869;border-radius:3px}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#565869;border-radius:3px}
     @media(max-width:480px){.msg{max-width:95%}.mc{font-size:.9rem}header{padding:8px 12px}#ia{padding:8px 12px 12px}}
   </style>
 </head>
@@ -121,7 +102,7 @@
 <script>
 const $=s=>document.querySelector(s);
 const chat=$('#chat'),inp=$('#inp'),sbtn=$('#sbtn'),cc=$('#cc'),sbadge=$('#sbadge'),eban=$('#ebanner'),mover=$('#mover'),toastEl=$('#toast');
-const state={msgs:[],ctx:[],busy:false,ok:false,apiIdx:0,timer:null};
+const state={msgs:[],ctx:[],busy:false,online:false,apiIdx:0,timer:null};
 
 const ICONS={
   bot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>',
@@ -133,36 +114,23 @@ const ICONS={
   err:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
 };
 
-// ===== PARSING MARKDOWN SIMPLE =====
+// ===== PARSING MARKDOWN =====
 function parseMarkdown(text){
   if(!text) return '';
-  let html=text
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*\*(.+?)\*\*\*/g,'<b><i>$1</i></b>')
-    .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
-    .replace(/\*(.+?)\*/g,'<i>$1</i>')
-    .replace(/___(.+?)___/g,'<b><i>$1</i></b>')
-    .replace(/__(.+?)__/g,'<b>$1</b>')
-    .replace(/_(.+?)_/g,'<i>$1</i>')
-    .replace(/`{3}(\w*)\n?([\s\S]*?)`{3}/g,'<pre><code>$2</code></pre>')
-    .replace(/`(.+?)`/g,'<code>$1</code>')
+  let html=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<b><i>$1</i></b>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>')
+    .replace(/`{3}(\w*)\n?([\s\S]*?)`{3}/g,'<pre><code>$2</code></pre>').replace(/`(.+?)`/g,'<code>$1</code>')
     .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
     .replace(/^(#{1,3})\s+(.+)$/gm,(m,h,t)=>`<h${h.length}>${t}</h${h.length}>`)
-    .replace(/^\*\s+(.+)$/gm,'<li>$1</li>')
-    .replace(/^\d+\.\s+(.+)$/gm,'<li>$1</li>')
-    .replace(/(<li>.*<\/li>)/gs,m=>`<ul>${m}</ul>`)
-    .replace(/^---+$/gm,'<hr>')
-    .replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>')
-    .replace(/\n{2,}/g,'</p><p>')
-    .replace(/\n/g,'<br>');
+    .replace(/^\*\s+(.+)$/gm,'<li>$1</li>').replace(/^\d+\.\s+(.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs,m=>`<ul>${m}</ul>`).replace(/^---+$/gm,'<hr>')
+    .replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>').replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
   return `<p>${html}</p>`;
 }
 
 function toast(msg,type='info'){
-  const el=document.createElement('div');
-  el.className='tst';
-  el.innerHTML=ICONS[type]+`<span>${msg}</span>`;
-  toastEl.appendChild(el);
+  const el=document.createElement('div');el.className='tst';
+  el.innerHTML=ICONS[type]+`<span>${msg}</span>`;toastEl.appendChild(el);
   setTimeout(()=>el.remove(),3000);
 }
 
@@ -174,132 +142,329 @@ function adjH(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeig
 function updC(){const l=inp.value.length;cc.textContent=`${l}/4000`;cc.style.color=l>3800?'#f56565':'#8e8ea0';}
 async function copyTxt(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg,'ok')}catch{toast('Error','err')}}
 
-// ===== APIS POLLINATIONS.AI =====
-const APIS=[
-  {id:'p-get',timeout:12000,async call(prompt,ctx){
-    const c=ctx.length?`Contexto:\n${ctx.slice(-4).map(m=>`${m.r==='u'?'U':'A'}: ${m.c}`).join('\n')}\n\n`:'';
-    const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent(c+prompt)}?model=openai&seed=${Date.now()%1e6}`,{headers:{'Accept':'text/plain'}});
-    if(!r.ok)throw r.status;return await r.text();
-  }},
-  {id:'p-post',timeout:15000,async call(prompt,ctx){
-    const msgs=[{role:'system',content:'Responde de forma util y concisa. Usa formato markdown para negrita (**texto**), italic (*texto*), codigo (`codigo`), listas y enlaces.'},...ctx.slice(-6).map(m=>({role:m.r==='u'?'user':'assistant',content:m.c})),{role:'user',content:prompt}];
-    const r=await fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs})});
-    if(!r.ok)throw r.status;return await r.text();
-  }},
-  {id:'p-mistral',timeout:12000,async call(prompt,ctx){
-    const c=ctx.length?`${ctx.slice(-3).map(m=>`${m.r==='u'?'U':'A'}: ${m.c}`).join('\n')}\n\n`:'';
-    const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent(c+prompt)}?model=mistral&seed=${Date.now()%1e6}`,{headers:{'Accept':'text/plain'}});
-    if(!r.ok)throw r.status;return await r.text();
-  }},
-  {id:'p-qwen',timeout:12000,async call(prompt,ctx){
-    const c=ctx.length?`${ctx.slice(-3).map(m=>`${m.r==='u'?'U':'A'}: ${m.c}`).join('\n')}\n\n`:'';
-    const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent(c+prompt)}?model=qwen-coder&seed=${Date.now()%1e6}`,{headers:{'Accept':'text/plain'}});
-    if(!r.ok)throw r.status;return await r.text();
-  }},
-  {id:'p-llama',timeout:12000,async call(prompt,ctx){
-    const c=ctx.length?`${ctx.slice(-3).map(m=>`${m.r==='u'?'U':'A'}: ${m.c}`).join('\n')}\n\n`:'';
-    const r=await fetch(`https://text.pollinations.ai/${encodeURIComponent(c+prompt)}?model=llama&seed=${Date.now()%1e6}`,{headers:{'Accept':'text/plain'}});
-    if(!r.ok)throw r.status;return await r.text();
-  }}
+// ===== APIS CON PROXY CORS PARA FUNCIONAR DESDE FILE:// =====
+const CORS_PROXIES = [
+  'https://api.allorigins.win/raw?url=',
+  'https://corsproxy.io/?',
+  '' // Sin proxy (intento directo primero)
 ];
 
-async function probeAPI(api){
-  const ctrl=new AbortController();
-  const t=setTimeout(()=>ctrl.abort(),4000);
-  try{
-    const r=await fetch('https://text.pollinations.ai/',{signal:ctrl.signal,method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:[{role:'user',content:'ok'}]})});
-    clearTimeout(t);return r.ok||r.status===400;
-  }catch{clearTimeout(t);return false}
-}
-
-async function findWorkingAPI(){
-  status('Conectando','searching');eban.classList.remove('s');
-  const probes=APIS.slice(0,3).map(async(api,i)=>{const ok=await probeAPI(api);return ok?i:-1});
-  const results=await Promise.allSettled(probes);
-  const working=results.find(r=>r.status==='fulfilled'&&r.value>=0);
-  if(working){state.apiIdx=working.value;state.ok=true;status('Conectado','ok');return true}
-  for(let i=0;i<APIS.length;i++){if(await probeAPI(APIS[i])){state.apiIdx=i;state.ok=true;status('Conectado','ok');return true}}
-  state.ok=false;status('Sin conexion','off');errMsg('Verifica tu conexion. Reintentando...');scheduleReconnect();return false;
-}
-
-function scheduleReconnect(){clearTimeout(state.timer);state.timer=setTimeout(()=>{if(!state.ok)findWorkingAPI()},6000);}
-
-async function callAPI(prompt,maxAttempts=3){
-  for(let attempt=0;attempt<maxAttempts;attempt++){
-    for(let offset=0;offset<APIS.length;offset++){
-      const idx=(state.apiIdx+offset)%APIS.length;const api=APIS[idx];
-      const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),api.timeout);
-      try{
-        const result=await api.call(prompt,state.ctx);clearTimeout(to);
-        if(result&&result.trim().length>5){state.apiIdx=idx;if(!state.ok){state.ok=true;status('Conectado','ok');toast('Conexion restaurada','ok')}eban.classList.remove('s');return result.trim()}
-      }catch(e){clearTimeout(to)}
-    }
-    if(attempt<maxAttempts-1)await new Promise(r=>setTimeout(r,1000*Math.pow(2,attempt)))
+async function fetchWithCORS(url, options = {}) {
+  // Intentar sin proxy primero (si el endpoint permite CORS)
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 10000);
+    const res = await fetch(url, { ...options, signal: ctrl.signal });
+    clearTimeout(t);
+    if (res.ok) return await res.text();
+  } catch (e) { console.log('Direct fetch failed:', e.message); }
+  
+  // Probar con proxies CORS
+  for (const proxy of CORS_PROXIES) {
+    if (!proxy) continue;
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 12000);
+      const res = await fetch(proxy + encodeURIComponent(url), { ...options, signal: ctrl.signal });
+      clearTimeout(t);
+      if (res.ok) return await res.text();
+    } catch (e) { console.log(`Proxy ${proxy} failed:`, e.message); }
   }
-  throw new Error('Todas las APIs fallaron')
+  throw new Error('CORS proxy failed');
 }
 
-async function raceCall(prompt){
-  const fast=[APIS[0],APIS[2],APIS[3]];
-  const promises=fast.map(async(api)=>{
-    const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),8000);
-    try{const r=await api.call(prompt,state.ctx);clearTimeout(to);if(r&&r.trim().length>5)return{api,result:r}}catch{clearTimeout(to)}return null
-  });
-  const results=await Promise.allSettled(promises);const winner=results.find(r=>r.status==='fulfilled'&&r.value!==null);
-  if(winner){state.apiIdx=fast.indexOf(winner.value.api);return winner.value.result.trim()}
-  return callAPI(prompt,2)
+// ===== POLLINATIONS.AI CONECTIVIDAD ROBUSTA =====
+async function callPollinations(prompt, ctx, model = 'openai') {
+  const context = ctx.length > 0 
+    ? `Contexto reciente:\n${ctx.slice(-5).map(m => `${m.r === 'u' ? 'Usuario' : 'Asistente'}: ${m.c}`).join('\n')}\n\n` 
+    : '';
+  const fullPrompt = encodeURIComponent(context + prompt);
+  const seed = Date.now() % 100000;
+  const url = `https://text.pollinations.ai/${fullPrompt}?model=${model}&seed=${seed}&json=false`;
+  
+  console.log('Calling Pollinations:', url.slice(0, 100) + '...');
+  const text = await fetchWithCORS(url, { headers: { 'Accept': 'text/plain' } });
+  return text.trim();
+}
+
+async function testConnection() {
+  try {
+    // Test simple con modelo ligero
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 8000);
+    const url = 'https://text.pollinations.ai/hello?model=openai&seed=1';
+    const res = await fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'text/plain' } });
+    if (res.ok || res.status === 404) { // 404 también indica que el endpoint existe
+      console.log('Pollinations connection OK');
+      return true;
+    }
+  } catch (e) {
+    console.log('Direct connection test failed:', e.message);
+  }
+  
+  // Probar con proxy
+  try {
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://text.pollinations.ai/hello?model=openai&seed=1');
+    const res = await fetch(proxyUrl, { headers: { 'Accept': 'text/plain' } });
+    if (res.ok) {
+      console.log('Pollinations via proxy OK');
+      return true;
+    }
+  } catch (e) {
+    console.log('Proxy connection test failed:', e.message);
+  }
+  
+  return false;
+}
+
+async function findWorkingConnection() {
+  status('Conectando', 'searching');
+  eban.classList.remove('s');
+  
+  const connected = await testConnection();
+  if (connected) {
+    state.online = true;
+    status('Conectado', 'ok');
+    console.log('✅ Athena online - Pollinations.ai disponible');
+    return true;
+  }
+  
+  // Si falla, activar modo offline funcional
+  state.online = false;
+  status('Modo Offline', 'off');
+  console.log('⚠️ Sin conexión a Pollinations - Usando modo offline funcional');
+  errMsg('Modo offline activado. Respuestas locales disponibles.');
+  toast('Modo offline: respuestas básicas disponibles', 'info');
+  scheduleReconnect();
+  return false;
+}
+
+function scheduleReconnect() {
+  clearTimeout(state.timer);
+  state.timer = setTimeout(() => {
+    if (!state.online && navigator.onLine) {
+      console.log('🔄 Reintentando conexión...');
+      findWorkingConnection();
+    }
+  }, 10000);
+}
+
+// ===== FALLBACK LOCAL FUNCIONAL (SÍ RESPONDE) =====
+const localResponses = {
+  greetings: ['Hola. ¿En qué puedo ayudarte?', 'Bienvenido. ¿Qué necesitas?', 'Saludos. Estoy lista para asistirte.'],
+  thanks: ['De nada. ¿Algo más en lo que pueda ayudar?', 'Un placer. ¿Necesitas algo adicional?', 'Con gusto. Aquí estaré si me requieres.'],
+  about: `Soy Athena, un asistente de IA integrado en esta página.\n\n**Características:**\n• Funciona sin instalación\n• Sin registro requerido\n• Conversación con contexto\n• **Conexión a Pollinations.ai** cuando hay internet\n• **Modo offline funcional** sin conexión\n\nPara información actualizada, consulta fuentes especializadas.`,
+  code: `Ejemplo de función en JavaScript:\n\n\`\`\`js\nfunction procesar(datos) {\n  return datos.filter(d => d.activo)\n    .map(d => d.valor * 2);\n}\nconsole.log(procesar([{activo:true,valor:5}]));\n\`\`\`\n\n**Consejos:**\n• Usa nombres descriptivos\n• Valida entradas del usuario\n• Maneja errores con try/catch\n\n¿Requieres ayuda con código específico?`,
+  farewell: ['Hasta luego. Vuelve cuando necesites asistencia.', 'Adiós. Que tengas un buen día.', 'Nos vemos. Estoy disponible cuando me necesites.'],
+  help: `**Funciones disponibles:**\n\n✓ Responder preguntas generales\n✓ Asistencia con programación\n✓ Explicaciones de conceptos\n✓ Mantener contexto de conversación\n✓ Exportar chat a texto\n✓ Formato markdown: **negrita**, *cursiva*, \`código\`\n\n**Limitaciones offline:**\n• Conocimiento predefinido\n• Sin acceso a internet\n• Sin ejecución de código\n\n¿En qué puedo asistirte?`,
+  default: [
+    'Interesante. Con mis capacidades actuales, puedo ofrecerte una perspectiva general. ¿Podrías proporcionar más contexto para una respuesta más precisa?',
+    'Entiendo tu consulta. En modo offline, mis respuestas se basan en patrones predefinidos. Para información crítica, verifica con fuentes especializadas.',
+    'Buena pregunta. Haré mi mejor esfuerzo con los recursos disponibles. ¿Hay algún aspecto específico en el que pueda enfocarme?'
+  ]
+};
+
+function getLocalResponse(input) {
+  const lower = input.toLowerCase().trim();
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  
+  if (/^(hola|hey|buenos|hi|hello|saludos)/i.test(lower)) return pick(localResponses.greetings);
+  if (/(gracias|thank|grax|thanks)/i.test(lower)) return pick(localResponses.thanks);
+  if (/(quien eres|que eres|who are you|como funcion|sobre ti|que es athena)/i.test(lower)) return localResponses.about;
+  if (/(codigo|program|javascript|python|html|css|funcion|function|ejemplo)/i.test(lower)) return localResponses.code;
+  if (/(adios|chao|bye|hasta luego|nos vemos|hasta pronto)/i.test(lower)) return pick(localResponses.farewell);
+  if (/(que es|explica|definicion|significa|help|ayuda|puedes|como se)/i.test(lower)) return localResponses.help;
+  if (/(negrita|bold|italic|cursiva|markdown|formato)/i.test(lower)) {
+    return `**Sí, soporto formato markdown:**\n\n• **Negrita** con **asteriscos dobles**\n• *Cursiva* con *asterisco simple*\n• \`Código\` con \`backticks\`\n• [Enlaces](https://ejemplo.com)\n• Listas con * o 1.\n• Bloques de código con \`\`\`\n\nPrueba escribir: **esto es negrita**`;
+  }
+  
+  return localResponses.default[state.msgs.length % localResponses.default.length];
 }
 
 // ===== MENSAJES =====
-function addMsg(role,content){
-  const div=document.createElement('div');
-  div.className=`msg ${role==='u'?'user':'bot'}`;
-  div.innerHTML=`<div class="av">${role==='u'?ICONS.user:ICONS.bot}</div><div style="flex:1;min-width:0"><div class="mc"></div><div class="meta"><span>${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><div class="ma"><button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>${role==='b'?`<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>`:''}</div></div></div>`;
-  div.querySelector('.mc').innerHTML=role==='b'?parseMarkdown(content):content;
-  const wel=chat.querySelector('.wel');if(wel)wel.remove();
-  chat.appendChild(div);scrollEnd();return div
+function addMsg(role, content, isMarkdown = false) {
+  const div = document.createElement('div');
+  div.className = `msg ${role === 'u' ? 'user' : 'bot'}`;
+  div.innerHTML = `<div class="av">${role === 'u' ? ICONS.user : ICONS.bot}</div><div style="flex:1;min-width:0"><div class="mc"></div><div class="meta"><span>${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span><div class="ma"><button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>${role === 'b' ? `<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>` : ''}</div></div></div>`;
+  const mc = div.querySelector('.mc');
+  if (role === 'b' && isMarkdown) {
+    mc.innerHTML = parseMarkdown(content);
+  } else {
+    mc.textContent = content;
+  }
+  const wel = chat.querySelector('.wel'); if (wel) wel.remove();
+  chat.appendChild(div); scrollEnd(); return div;
 }
 
-function showType(){if(chat.querySelector('.type'))return;const t=document.createElement('div');t.className='msg bot type';t.innerHTML='<span></span><span></span><span></span>';chat.appendChild(t);scrollEnd()}
-function hideType(){chat.querySelector('.type')?.remove()}
-function pushCtx(role,content){state.ctx.push({r:role,c:content});if(state.ctx.length>10)state.ctx=state.ctx.slice(-10)}
+function showType() { if (chat.querySelector('.type')) return; const t = document.createElement('div'); t.className = 'msg bot type'; t.innerHTML = '<span></span><span></span><span></span>'; chat.appendChild(t); scrollEnd(); }
+function hideType() { chat.querySelector('.type')?.remove(); }
+function pushCtx(role, content) { state.ctx.push({ r: role, c: content }); if (state.ctx.length > 10) state.ctx = state.ctx.slice(-10); }
 
-// ===== ENVIO =====
-async function send(){
-  const txt=inp.value.trim();if(!txt||state.busy)return;
-  addMsg('u',txt);inp.value='';adjH();updC();pushCtx('u',txt);showType();state.busy=true;sbtn.disabled=true;
-  if(!state.ok){const connected=await findWorkingAPI();if(!connected){hideType();state.busy=false;sbtn.disabled=false;errMsg('Sin conexion a internet.');toast('Verifica tu red','err');return}}
-  try{
-    let response;try{response=await raceCall(txt)}catch{response=await callAPI(txt,3)}
-    addMsg('b',response);pushCtx('b',response);state.ok=true;status('Conectado','ok');eban.classList.remove('s')
-  }catch(e){state.ok=false;status('Reconectando','searching');errMsg(`Error: ${e.message}. Reintentando...`);findWorkingAPI()}
-  finally{hideType();state.busy=false;sbtn.disabled=false;scrollEnd()}
+// ===== ENVÍO PRINCIPAL =====
+async function send() {
+  const txt = inp.value.trim();
+  if (!txt || state.busy) return;
+  
+  console.log('📤 Enviando:', txt.slice(0, 50) + (txt.length > 50 ? '...' : ''));
+  
+  addMsg('u', txt);
+  inp.value = ''; adjH(); updC();
+  pushCtx('u', txt);
+  showType();
+  state.busy = true; sbtn.disabled = true;
+  
+  try {
+    let response, isMarkdown = false;
+    
+    if (state.online) {
+      // Intentar Pollinations.ai
+      try {
+        console.log('🌐 Llamando a Pollinations.ai...');
+        response = await callPollinations(txt, state.ctx, 'openai');
+        isMarkdown = true;
+        console.log('✅ Respuesta recibida:', response.slice(0, 100) + '...');
+      } catch (e) {
+        console.warn('❌ Pollinations failed:', e.message);
+        state.online = false;
+        status('Modo Offline', 'off');
+        // Fallback automático a local
+        response = getLocalResponse(txt);
+        isMarkdown = true;
+        errMsg('Conexión perdida. Usando modo offline.');
+      }
+    } else {
+      // Modo offline funcional
+      console.log('📦 Usando respuesta local');
+      response = getLocalResponse(txt);
+      isMarkdown = true;
+    }
+    
+    addMsg('b', response, isMarkdown);
+    pushCtx('b', response);
+    
+    // Si estaba offline y ahora funciona, actualizar estado
+    if (!state.online && navigator.onLine) {
+      findWorkingConnection().then(ok => {
+        if (ok) { toast('Conexión restaurada', 'ok'); }
+      });
+    }
+    
+  } catch (error) {
+    console.error('💥 Error crítico:', error);
+    state.online = false;
+    status('Modo Offline', 'off');
+    const fallback = getLocalResponse(txt);
+    addMsg('b', fallback, true);
+    pushCtx('b', fallback);
+    errMsg('Error de conexión. Respuesta local generada.');
+  } finally {
+    hideType(); state.busy = false; sbtn.disabled = false; scrollEnd();
+  }
 }
 
 // ===== REGENERAR =====
-async function regenerate(){
-  const lastUser=[...state.ctx].reverse().find(m=>m.r==='u');if(!lastUser)return;
-  state.ctx=state.ctx.filter((m,i,arr)=>!(i===arr.length-1&&m.r==='b'));
-  const last=chat.lastElementChild;if(last?.classList.contains('msg')&&!last.classList.contains('user'))last.remove();
-  state.busy=true;sbtn.disabled=true;showType();
-  try{const r=await callAPI(lastUser.c);addMsg('b',r);pushCtx('b',r);toast('Respuesta regenerada','ok')}catch{errMsg('Error al regenerar')}
-  finally{hideType();state.busy=false;sbtn.disabled=false;scrollEnd()}
+async function regenerate() {
+  const lastUser = [...state.ctx].reverse().find(m => m.r === 'u');
+  if (!lastUser) return;
+  
+  state.ctx = state.ctx.filter((m, i, arr) => !(i === arr.length - 1 && m.r === 'b'));
+  const last = chat.lastElementChild;
+  if (last?.classList.contains('msg') && !last.classList.contains('user')) last.remove();
+  
+  state.busy = true; sbtn.disabled = true; showType();
+  
+  try {
+    let response, isMarkdown = false;
+    if (state.online) {
+      response = await callPollinations(lastUser.c, state.ctx, 'openai');
+      isMarkdown = true;
+    } else {
+      response = getLocalResponse(lastUser.c);
+      isMarkdown = true;
+    }
+    addMsg('b', response, isMarkdown);
+    pushCtx('b', response);
+    toast('Respuesta regenerada', 'ok');
+  } catch {
+    const fallback = getLocalResponse(lastUser.c);
+    addMsg('b', fallback, true);
+    pushCtx('b', fallback);
+  } finally {
+    hideType(); state.busy = false; sbtn.disabled = false; scrollEnd();
+  }
 }
 
-// ===== MENU =====
-function newChat(){if(state.busy||(state.msgs.length&&!confirm('Iniciar nueva conversacion?')))return;state.msgs=[];state.ctx=[];chat.innerHTML='<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Nueva conversacion</p></div>';openModal(false);toast('Nueva conversacion','ok');inp.focus()}
-function clearChat(){if(state.busy||!confirm('Eliminar toda la conversacion?'))return;state.msgs=[];state.ctx=[];chat.innerHTML='<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Chat limpiado</h2><p>Que deseas preguntar?</p></div>';openModal(false);toast('Chat eliminado','ok')}
-function exportChat(){if(!state.msgs.length){toast('No hay mensajes','info');return}const c=state.msgs.map(m=>`[${m.t}] ${m.r==='u'?'Tu':'Athena'}:\n${m.c}\n`).join('\n---\n\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));a.download=`athena_${new Date().toISOString().slice(0,10)}.txt`;a.click();openModal(false);toast('Chat exportado','ok')}
-async function copyAll(){if(!state.msgs.length){toast('No hay mensajes','info');return}await copyTxt(state.msgs.map(m=>`${m.r==='u'?'Tu':'Athena'}: ${m.c}`).join('\n\n'),'Chat copiado');openModal(false)}
+// ===== MENÚ ACCIONES =====
+function newChat() {
+  if (state.busy || (state.msgs.length && !confirm('¿Iniciar nueva conversación?'))) return;
+  state.msgs = []; state.ctx = [];
+  chat.innerHTML = '<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Nueva conversación</p></div>';
+  openModal(false); toast('Nueva conversación', 'ok'); inp.focus();
+}
+
+function clearChat() {
+  if (state.busy || !confirm('¿Eliminar toda la conversación?')) return;
+  state.msgs = []; state.ctx = [];
+  chat.innerHTML = '<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Chat limpiado</h2><p>¿Qué deseas preguntar?</p></div>';
+  openModal(false); toast('Chat eliminado', 'ok');
+}
+
+function exportChat() {
+  if (!state.msgs.length) { toast('No hay mensajes', 'info'); return; }
+  const c = state.msgs.map(m => `[${m.t || new Date().toLocaleTimeString()}] ${m.r === 'u' ? 'Tú' : 'Athena'}:\n${m.c}\n`).join('\n---\n\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([c], { type: 'text/plain' }));
+  a.download = `athena_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click(); openModal(false); toast('Chat exportado', 'ok');
+}
+
+async function copyAll() {
+  if (!state.msgs.length) { toast('No hay mensajes', 'info'); return; }
+  await copyTxt(state.msgs.map(m => `${m.r === 'u' ? 'Tú' : 'Athena'}: ${m.c}`).join('\n\n'), 'Chat copiado');
+  openModal(false);
+}
 
 // ===== EVENTOS =====
-sbtn.onclick=send;inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};inp.oninput=()=>{adjH();updC()};
-$('#mbtn').onclick=()=>openModal(true);$('#mclose').onclick=()=>openModal(false);mover.onclick=e=>{if(e.target===mover)openModal(false)};
-$('#nchat').onclick=newChat;$('#eport').onclick=exportChat;$('#call').onclick=copyAll;$('#cchat').onclick=clearChat;
-chat.onclick=e=>{const btn=e.target.closest('.mab');if(!btn)return;const mc=btn.closest('.msg').querySelector('.mc');if(btn.dataset.a==='c')copyTxt(mc.textContent,'Copiado');if(btn.dataset.a==='r')regenerate()};
-let hTimer;chat.ontouchstart=e=>{const mc=e.target.closest('.mc');if(!mc)return;hTimer=setTimeout(()=>{copyTxt(mc.textContent,'Copiado');navigator.vibrate?.(50)},500)};chat.ontouchend=chat.ontouchmove=()=>clearTimeout(hTimer);
-window.ononline=()=>{if(!state.ok)findWorkingAPI()};inp.onfocus=()=>{if(window.visualViewport)window.visualViewport.scale=1};
-adjH();findWorkingAPI();inp.focus();
+sbtn.onclick = send;
+inp.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } };
+inp.oninput = () => { adjH(); updC(); };
+$('#mbtn').onclick = () => openModal(true);
+$('#mclose').onclick = () => openModal(false);
+mover.onclick = e => { if (e.target === mover) openModal(false); };
+$('#nchat').onclick = newChat; $('#eport').onclick = exportChat; $('#call').onclick = copyAll; $('#cchat').onclick = clearChat;
+
+chat.onclick = e => {
+  const btn = e.target.closest('.mab'); if (!btn) return;
+  const mc = btn.closest('.msg').querySelector('.mc');
+  if (btn.dataset.a === 'c') copyTxt(mc.textContent || mc.innerText, 'Copiado');
+  if (btn.dataset.a === 'r') regenerate();
+};
+
+// Touch para móvil: mantener presionado para copiar
+let hTimer;
+chat.ontouchstart = e => {
+  const mc = e.target.closest('.mc'); if (!mc) return;
+  hTimer = setTimeout(() => { copyTxt(mc.textContent || mc.innerText, 'Copiado'); navigator.vibrate?.(50); }, 600);
+};
+chat.ontouchend = chat.ontouchmove = () => clearTimeout(hTimer);
+
+// Reconectar al recuperar red
+window.ononline = () => { if (!state.online) { console.log('🌐 Red disponible, probando conexión...'); findWorkingConnection(); } };
+
+// Prevenir zoom en iOS
+inp.onfocus = () => { if (window.visualViewport) window.visualViewport.scale = 1; };
+
+// ===== INICIALIZACIÓN =====
+console.log('🚀 Athena Chat IA iniciando...');
+adjH(); updC();
+findWorkingConnection();
+inp.focus();
+
+// Debug: mostrar estado en consola
+setInterval(() => {
+  if (state.online) console.log('✅ Athena: Online');
+  else console.log('⚠️ Athena: Offline (modo funcional)');
+}, 30000);
 </script>
 </body>
 </html>
