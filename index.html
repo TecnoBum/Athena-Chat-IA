@@ -7,20 +7,37 @@
   <title>Athena Chat IA</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-    body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#343541;color:#ececf1;line-height:1.5;overflow:hidden}
+    body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#343541;color:#ececf1;line-height:1.5;overflow:hidden;transition:background .3s,color .3s}
+    body.light{background:#fff;color:#1a1a2e}
+    body.light header{background:#f8f9fa;border-bottom-color:#e0e0e0}
+    body.light .htitle{color:#1a1a2e}
+    body.light .ibtn{color:#1a1a2e}
+    body.light .ibtn:hover{background:#e0e0e0}
+    body.light #sbadge.ok{background:#22c55e;color:#fff}
+    body.light #sbadge.off{background:#94a3b8;color:#1a1a2e}
+    body.light #chat{background:#fff}
+    body.light .msg.bot .mc{background:#f1f5f9}
+    body.light .msg.user .mc{background:#e0e7ff}
+    body.light #ia{background:#fff;border-top-color:#e0e0e0}
+    body.light #iwrap{background:#f8f9fa;border-color:#cbd5e1}
+    body.light #inp{color:#1a1a2e}
+    body.light #inp::placeholder{color:#64748b}
+    body.light #cc{color:#64748b}
+    body.light .mcont{background:#f8f9fa}
+    body.light .mitem{background:#fff}
+    body.light .mitem:hover{background:#e2e8f0}
+    body.light .tst{background:#fff;color:#1a1a2e;box-shadow:0 4px 16px rgba(0,0,0,.1)}
     #app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:900px;margin:0 auto;width:100%}
     header{padding:10px 16px;background:#202123;border-bottom:1px solid #4d4d4f;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10}
     .htitle{display:flex;align-items:center;gap:10px;font-weight:600;font-size:1.1rem}
     .htitle svg{width:24px;height:24px}
-    .hactions{display:flex;align-items:center;gap:6px}
-    .ibtn{background:transparent;border:none;color:#ececf1;width:36px;height:36px;border-radius:8px;display:grid;place-items:center;cursor:pointer;padding:6px;transition:background .2s}
-    .ibtn:hover{background:#444654}.ibtn:active{background:#565869}.ibtn svg{width:20px;height:20px}
-    #sbadge{font-size:.65rem;padding:3px 10px;border-radius:10px;font-weight:500;display:flex;align-items:center;gap:4px;white-space:nowrap}
-    #sbadge.ok{background:#19c37d;color:#0b1412}
-    #sbadge.searching{background:#d69e2e;color:#0b1412;animation:pulse 1s infinite}
-    #sbadge.off{background:#565869;color:#ececf1}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-    #sbadge svg{width:10px;height:10px}
+    .hactions{display:flex;align-items:center;gap:4px}
+    .ibtn{background:transparent;border:none;color:#ececf1;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;cursor:pointer;padding:5px;transition:background .2s}
+    .ibtn:hover{background:#444654}.ibtn:active{background:#565869}.ibtn svg{width:18px;height:18px}
+    #sbadge{font-size:.6rem;padding:2px 8px;border-radius:8px;font-weight:500;display:flex;align-items:center;gap:3px}
+    #sbadge.ok{background:#19c37d;color:#0b1412}#sbadge.searching{background:#d69e2e;color:#0b1412;animation:pulse 1s infinite}
+    #sbadge.off{background:#565869;color:#ececf1}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+    #sbadge svg{width:9px;height:9px}
     #chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
     .msg{display:flex;gap:10px;max-width:90%;animation:up .2s}
     @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -28,28 +45,32 @@
     .av{width:32px;height:32px;border-radius:6px;display:grid;place-items:center;flex-shrink:0}
     .msg.bot .av{background:#19c37d}.msg.bot .av svg{width:16px;height:16px;color:#0b1412}
     .msg.user .av{background:#5436da}.msg.user .av svg{width:16px;height:16px;color:#fff}
-    .mc{padding:12px 14px;border-radius:16px;word-break:break-word;line-height:1.6;font-size:.95rem}
+    .mc{padding:12px 14px;border-radius:16px;word-break:break-word;line-height:1.6;font-size:.95rem;position:relative}
     .msg.bot .mc{background:#2b2d31;border-top-left-radius:4px}
     .msg.user .mc{background:#444654;border-top-right-radius:4px}
     .mc b,.mc strong{font-weight:600;color:#fff}.mc i,.mc em{font-style:italic;color:#c5c5d2}
     .mc code{background:#1e1f29;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:.9em;color:#e0e0ff}
-    .mc pre{background:#1e1f29;padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;font-family:monospace;font-size:.9em}
+    .mc pre{background:#1e1f29;padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;font-family:monospace;font-size:.9em;position:relative}
     .mc pre code{background:none;padding:0;color:#a0d4ff}
+    .copy-code{position:absolute;top:8px;right:8px;background:#444654;border:none;color:#ececf1;padding:4px 8px;border-radius:4px;font-size:.75rem;cursor:pointer;display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .2s}
+    .mc pre:hover .copy-code{opacity:1}.copy-code:hover{background:#565869}
+    .copy-code svg{width:12px;height:12px}
     .mc ul,.mc ol{padding-left:20px;margin:8px 0}.mc li{margin:4px 0}
     .mc a{color:#6db3f2;text-decoration:none}.mc a:hover{text-decoration:underline}
     .mc hr{border:none;border-top:1px solid #4d4d4f;margin:12px 0}
     .mc blockquote{border-left:3px solid #19c37d;padding-left:12px;margin:8px 0;color:#a0a0b0}
     .meta{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:.7rem;color:#8e8ea0}
-    .ma{display:flex;gap:2px;margin-left:auto}
+    .resp-time{color:#64748b;margin-left:auto}
+    .ma{display:flex;gap:2px;margin-left:4px}
     .mab{background:transparent;border:none;color:#8e8ea0;width:22px;height:22px;border-radius:4px;display:grid;place-items:center;cursor:pointer;padding:2px;transition:color .2s,background .2s}
     .mab:hover{color:#ececf1;background:#444654}.mab svg{width:13px;height:13px}
-    #ia{padding:10px 16px 14px;background:#343541;border-top:1px solid #4d4d4f;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,14px)}
+    #ia{padding:10px 16px 14px;background:#343541;border-top:1px solid #4d4d4f;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,14px);transition:background .3s,border-color .3s}
     #ebanner{background:#7b2d3a;color:#fff;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:.82rem;display:none}
     #ebanner.s{display:block;animation:up .3s}
-    #iwrap{display:flex;align-items:flex-end;gap:8px;background:#40414f;border-radius:14px;padding:6px 10px;border:1px solid #565869;transition:border-color .2s,box-shadow .2s}
+    #iwrap{display:flex;align-items:flex-end;gap:6px;background:#40414f;border-radius:14px;padding:6px 10px;border:1px solid #565869;transition:border-color .2s,box-shadow .2s}
     #iwrap:focus-within{border-color:#19c37d;box-shadow:0 0 0 2px rgba(25,195,125,.2)}
     #inp{flex:1;background:transparent;border:none;color:#ececf1;font-size:1rem;resize:none;max-height:120px;outline:none;padding:6px 2px;line-height:1.4;min-height:24px}
-    #inp::placeholder{color:#8e8ea0}#cc{font-size:.65rem;color:#8e8ea0;text-align:right;margin-top:3px}
+    #inp::placeholder{color:#8e8ea0}#cc{font-size:.6rem;color:#8e8ea0;text-align:right;margin-top:2px}
     #sbtn{background:#19c37d;border:none;color:#0b1412;width:36px;height:36px;border-radius:8px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:background .2s,transform .1s}
     #sbtn:hover{background:#1a9f66}#sbtn:active{transform:scale(.95)}
     #sbtn:disabled{background:#565869;cursor:not-allowed;transform:none;opacity:.5}#sbtn svg{width:18px;height:18px}
@@ -61,57 +82,77 @@
     .wel svg{width:44px;height:44px;margin-bottom:14px;opacity:.7}
     .wel h2{color:#ececf1;margin-bottom:8px;font-size:1.2rem}
     .wel p{margin-bottom:5px;font-size:.9rem}
+    .suggestions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;justify-content:center}
+    .sug-chip{background:#2b2d31;padding:6px 12px;border-radius:20px;font-size:.8rem;cursor:pointer;transition:background .2s;border:1px solid #4d4d4f}
+    .sug-chip:hover{background:#444654;border-color:#64748b}
+    body.light .sug-chip{background:#e2e8f0;color:#1a1a2e;border-color:#cbd5e1}
+    body.light .sug-chip:hover{background:#cbd5e1}
+    .voice-btn{background:#444654;border:none;color:#ececf1;width:36px;height:36px;border-radius:8px;cursor:pointer;display:grid;place-items:center;transition:background .2s}
+    .voice-btn:hover{background:#565869}.voice-btn.listening{background:#ef4444;animation:pulse 1s infinite}
+    .voice-btn svg{width:18px;height:18px}
+    .tts-btn{background:transparent;border:none;color:#8e8ea0;width:24px;height:24px;border-radius:4px;cursor:pointer;display:grid;place-items:center;margin-left:4px}
+    .tts-btn:hover{color:#ececf1;background:#444654}.tts-btn svg{width:14px;height:14px}
     .mover{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;place-items:end center;z-index:20;padding:14px}
     .mover.s{display:grid;animation:up .2s}
-    .mcont{background:#202123;border-radius:14px 14px 0 0;padding:16px;width:100%;max-width:480px;max-height:65vh;overflow-y:auto}
+    .mcont{background:#202123;border-radius:14px 14px 0 0;padding:16px;width:100%;max-width:480px;max-height:70vh;overflow-y:auto}
     .mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #4d4d4f}
     .mhead h3{font-size:1rem;font-weight:600}
     .mlist{display:flex;flex-direction:column;gap:3px}
     .mitem{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:#2b2d31;cursor:pointer;font-size:.92rem;transition:background .15s}
     .mitem:hover{background:#444654}.mitem svg{width:18px;height:18px;flex-shrink:0}
     .mitem.danger{color:#f56565}.mitem.danger:hover{background:#4a2d35}
+    .font-control{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#2b2d31;border-radius:8px;margin-top:8px}
+    .font-control span{font-size:.9rem}.font-btn{background:#444654;border:none;color:#ececf1;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:1rem}
+    .font-btn:hover{background:#565869}
     #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;gap:6px;pointer-events:none}
     .tst{background:#202123;color:#ececf1;padding:8px 14px;border-radius:8px;font-size:.85rem;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:6px;animation:up .3s,fo .3s 2.5s forwards;pointer-events:auto;max-width:85vw}
-    .tst svg{width:16px;height:16px;flex-shrink:0}
-    @keyframes fo{to{opacity:0;transform:translateY(-8px)}}
+    .tst svg{width:16px;height:16px;flex-shrink:0}@keyframes fo{to{opacity:0;transform:translateY(-8px)}}
     ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#565869;border-radius:3px}
-    @media(max-width:480px){.msg{max-width:95%}.mc{font-size:.9rem}header{padding:8px 12px}#ia{padding:8px 12px 12px}}
+    @media(max-width:480px){.msg{max-width:95%}.mc{font-size:.9rem}header{padding:8px 12px}.hactions{gap:2px}.ibtn{width:32px;height:32px}#ia{padding:8px 12px 12px}.suggestions{gap:6px}.sug-chip{padding:5px 10px;font-size:.75rem}}
   </style>
 </head>
 <body>
 <div id="app">
   <header>
     <div class="htitle">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
       <span>Athena Chat IA</span>
     </div>
     <div class="hactions">
       <span id="sbadge" class="searching"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>Conectando</span>
-      <button class="ibtn" id="mbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <button class="ibtn" id="tts-global" title="Activar lectura en voz alta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+      <button class="ibtn" id="theme-btn" title="Cambiar tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="ibtn" id="mbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     </div>
   </header>
-  <div id="chat"><div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Asistente conectado en tiempo real</p></div></div>
+  <div id="chat"><div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Asistente conectado en tiempo real</p><div class="suggestions"><div class="sug-chip" data-prompt="¿Qué puedes hacer?">¿Qué puedes hacer?</div><div class="sug-chip" data-prompt="Explícame JavaScript">Explícame JavaScript</div><div class="sug-chip" data-prompt="Dame un ejemplo de código">Ejemplo de código</div><div class="sug-chip" data-prompt="Ayuda con mi tarea">Ayuda con tarea</div></div></div></div>
   <div id="ia">
     <div id="ebanner"></div>
-    <div id="iwrap"><textarea id="inp" placeholder="Escribe tu mensaje..." rows="1" maxlength="4000" aria-label="Mensaje"></textarea><button id="sbtn" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
+    <div id="iwrap">
+      <button class="voice-btn" id="voice-btn" title="Entrada por voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
+      <textarea id="inp" placeholder="Escribe tu mensaje... (Prueba /help para comandos)" rows="1" maxlength="4000" aria-label="Mensaje"></textarea>
+      <button id="sbtn" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
     <div id="cc">0 / 4000</div>
   </div>
 </div>
-<div class="mover" id="mover" role="dialog" aria-modal="true"><div class="mcont"><div class="mhead"><h3>Opciones</h3><button class="ibtn" id="mclose" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mlist"><div class="mitem" id="nchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva conversacion</div><div class="mitem" id="eport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exportar chat</div><div class="mitem" id="call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar todo</div><div class="mitem danger" id="cchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar chat</div></div></div></div>
+<div class="mover" id="mover" role="dialog" aria-modal="true"><div class="mcont"><div class="mhead"><h3>Opciones</h3><button class="ibtn" id="mclose" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mlist"><div class="mitem" id="nchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva conversacion</div><div class="mitem" id="eport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exportar chat</div><div class="mitem" id="share-chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Compartir conversacion</div><div class="mitem" id="call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar todo</div><div class="mitem danger" id="cchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar chat</div></div><div class="font-control"><span>Tamaño:</span><button class="font-btn" id="font-down">A-</button><button class="font-btn" id="font-up">A+</button><span id="font-val" style="margin-left:auto;font-size:.8rem;color:#8e8ea0">100%</span></div></div></div>
 <div id="toast"></div>
 <script>
 const $=s=>document.querySelector(s);
 const chat=$('#chat'),inp=$('#inp'),sbtn=$('#sbtn'),cc=$('#cc'),sbadge=$('#sbadge'),eban=$('#ebanner'),mover=$('#mover'),toastEl=$('#toast');
-const state={msgs:[],ctx:[],busy:false,online:false,apiIdx:0,timer:null};
+const state={msgs:[],ctx:[],busy:false,online:false,apiIdx:0,timer:null,ttsEnabled:false,fontSize:100,voiceSupported:false};
 
 const ICONS={
   bot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>',
   user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   regen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
+  tts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
   ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
   info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
-  err:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+  err:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'
 };
 
 // ===== PARSING MARKDOWN =====
@@ -119,7 +160,7 @@ function parseMarkdown(text){
   if(!text) return '';
   let html=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/\*\*\*(.+?)\*\*\*/g,'<b><i>$1</i></b>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>')
-    .replace(/`{3}(\w*)\n?([\s\S]*?)`{3}/g,'<pre><code>$2</code></pre>').replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/`{3}(\w*)\n?([\s\S]*?)`{3}/g,'<pre><code class="language-$1">$2</code><button class="copy-code">${ICONS.copy} Copiar</button>').replace(/`(.+?)`/g,'<code>$1</code>')
     .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
     .replace(/^(#{1,3})\s+(.+)$/gm,(m,h,t)=>`<h${h.length}>${t}</h${h.length}>`)
     .replace(/^\*\s+(.+)$/gm,'<li>$1</li>').replace(/^\d+\.\s+(.+)$/gm,'<li>$1</li>')
@@ -142,329 +183,282 @@ function adjH(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeig
 function updC(){const l=inp.value.length;cc.textContent=`${l}/4000`;cc.style.color=l>3800?'#f56565':'#8e8ea0';}
 async function copyTxt(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg,'ok')}catch{toast('Error','err')}}
 
-// ===== APIS CON PROXY CORS PARA FUNCIONAR DESDE FILE:// =====
-const CORS_PROXIES = [
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
-  '' // Sin proxy (intento directo primero)
-];
-
-async function fetchWithCORS(url, options = {}) {
-  // Intentar sin proxy primero (si el endpoint permite CORS)
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 10000);
-    const res = await fetch(url, { ...options, signal: ctrl.signal });
-    clearTimeout(t);
-    if (res.ok) return await res.text();
-  } catch (e) { console.log('Direct fetch failed:', e.message); }
-  
-  // Probar con proxies CORS
-  for (const proxy of CORS_PROXIES) {
-    if (!proxy) continue;
-    try {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 12000);
-      const res = await fetch(proxy + encodeURIComponent(url), { ...options, signal: ctrl.signal });
-      clearTimeout(t);
-      if (res.ok) return await res.text();
-    } catch (e) { console.log(`Proxy ${proxy} failed:`, e.message); }
-  }
-  throw new Error('CORS proxy failed');
+// ===== VOICE INPUT (Web Speech API) =====
+let recognition;
+function initVoice(){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){state.voiceSupported=false;$('#voice-btn').style.display='none';return;}
+  state.voiceSupported=true;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'es-ES';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.onresult = e => {
+    const text = e.results[0][0].transcript;
+    inp.value = (inp.value + ' ' + text).trim();
+    adjH(); updC();
+    toast('Texto reconocido', 'ok');
+  };
+  recognition.onerror = e => {
+    console.warn('Voice error:', e.error);
+    toast('Error de voz: ' + e.error, 'err');
+    $('#voice-btn').classList.remove('listening');
+  };
+  recognition.onend = () => $('#voice-btn').classList.remove('listening');
 }
 
-// ===== POLLINATIONS.AI CONECTIVIDAD ROBUSTA =====
-async function callPollinations(prompt, ctx, model = 'openai') {
-  const context = ctx.length > 0 
-    ? `Contexto reciente:\n${ctx.slice(-5).map(m => `${m.r === 'u' ? 'Usuario' : 'Asistente'}: ${m.c}`).join('\n')}\n\n` 
-    : '';
-  const fullPrompt = encodeURIComponent(context + prompt);
-  const seed = Date.now() % 100000;
-  const url = `https://text.pollinations.ai/${fullPrompt}?model=${model}&seed=${seed}&json=false`;
-  
-  console.log('Calling Pollinations:', url.slice(0, 100) + '...');
-  const text = await fetchWithCORS(url, { headers: { 'Accept': 'text/plain' } });
-  return text.trim();
-}
-
-async function testConnection() {
-  try {
-    // Test simple con modelo ligero
-    const ctrl = new AbortController();
-    setTimeout(() => ctrl.abort(), 8000);
-    const url = 'https://text.pollinations.ai/hello?model=openai&seed=1';
-    const res = await fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'text/plain' } });
-    if (res.ok || res.status === 404) { // 404 también indica que el endpoint existe
-      console.log('Pollinations connection OK');
-      return true;
-    }
-  } catch (e) {
-    console.log('Direct connection test failed:', e.message);
-  }
-  
-  // Probar con proxy
-  try {
-    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://text.pollinations.ai/hello?model=openai&seed=1');
-    const res = await fetch(proxyUrl, { headers: { 'Accept': 'text/plain' } });
-    if (res.ok) {
-      console.log('Pollinations via proxy OK');
-      return true;
-    }
-  } catch (e) {
-    console.log('Proxy connection test failed:', e.message);
-  }
-  
-  return false;
-}
-
-async function findWorkingConnection() {
-  status('Conectando', 'searching');
-  eban.classList.remove('s');
-  
-  const connected = await testConnection();
-  if (connected) {
-    state.online = true;
-    status('Conectado', 'ok');
-    console.log('✅ Athena online - Pollinations.ai disponible');
-    return true;
-  }
-  
-  // Si falla, activar modo offline funcional
-  state.online = false;
-  status('Modo Offline', 'off');
-  console.log('⚠️ Sin conexión a Pollinations - Usando modo offline funcional');
-  errMsg('Modo offline activado. Respuestas locales disponibles.');
-  toast('Modo offline: respuestas básicas disponibles', 'info');
-  scheduleReconnect();
-  return false;
-}
-
-function scheduleReconnect() {
-  clearTimeout(state.timer);
-  state.timer = setTimeout(() => {
-    if (!state.online && navigator.onLine) {
-      console.log('🔄 Reintentando conexión...');
-      findWorkingConnection();
-    }
-  }, 10000);
-}
-
-// ===== FALLBACK LOCAL FUNCIONAL (SÍ RESPONDE) =====
-const localResponses = {
-  greetings: ['Hola. ¿En qué puedo ayudarte?', 'Bienvenido. ¿Qué necesitas?', 'Saludos. Estoy lista para asistirte.'],
-  thanks: ['De nada. ¿Algo más en lo que pueda ayudar?', 'Un placer. ¿Necesitas algo adicional?', 'Con gusto. Aquí estaré si me requieres.'],
-  about: `Soy Athena, un asistente de IA integrado en esta página.\n\n**Características:**\n• Funciona sin instalación\n• Sin registro requerido\n• Conversación con contexto\n• **Conexión a Pollinations.ai** cuando hay internet\n• **Modo offline funcional** sin conexión\n\nPara información actualizada, consulta fuentes especializadas.`,
-  code: `Ejemplo de función en JavaScript:\n\n\`\`\`js\nfunction procesar(datos) {\n  return datos.filter(d => d.activo)\n    .map(d => d.valor * 2);\n}\nconsole.log(procesar([{activo:true,valor:5}]));\n\`\`\`\n\n**Consejos:**\n• Usa nombres descriptivos\n• Valida entradas del usuario\n• Maneja errores con try/catch\n\n¿Requieres ayuda con código específico?`,
-  farewell: ['Hasta luego. Vuelve cuando necesites asistencia.', 'Adiós. Que tengas un buen día.', 'Nos vemos. Estoy disponible cuando me necesites.'],
-  help: `**Funciones disponibles:**\n\n✓ Responder preguntas generales\n✓ Asistencia con programación\n✓ Explicaciones de conceptos\n✓ Mantener contexto de conversación\n✓ Exportar chat a texto\n✓ Formato markdown: **negrita**, *cursiva*, \`código\`\n\n**Limitaciones offline:**\n• Conocimiento predefinido\n• Sin acceso a internet\n• Sin ejecución de código\n\n¿En qué puedo asistirte?`,
-  default: [
-    'Interesante. Con mis capacidades actuales, puedo ofrecerte una perspectiva general. ¿Podrías proporcionar más contexto para una respuesta más precisa?',
-    'Entiendo tu consulta. En modo offline, mis respuestas se basan en patrones predefinidos. Para información crítica, verifica con fuentes especializadas.',
-    'Buena pregunta. Haré mi mejor esfuerzo con los recursos disponibles. ¿Hay algún aspecto específico en el que pueda enfocarme?'
-  ]
+$('#voice-btn').onclick = () => {
+  if(!state.voiceSupported){toast('Voz no soportada en este navegador','err');return;}
+  if($('#voice-btn').classList.contains('listening')){recognition.stop();return;}
+  try{
+    recognition.start();
+    $('#voice-btn').classList.add('listening');
+    toast('Escuchando... habla ahora', 'info');
+  }catch(e){toast('Error al iniciar voz','err')}
 };
 
-function getLocalResponse(input) {
-  const lower = input.toLowerCase().trim();
-  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-  
-  if (/^(hola|hey|buenos|hi|hello|saludos)/i.test(lower)) return pick(localResponses.greetings);
-  if (/(gracias|thank|grax|thanks)/i.test(lower)) return pick(localResponses.thanks);
-  if (/(quien eres|que eres|who are you|como funcion|sobre ti|que es athena)/i.test(lower)) return localResponses.about;
-  if (/(codigo|program|javascript|python|html|css|funcion|function|ejemplo)/i.test(lower)) return localResponses.code;
-  if (/(adios|chao|bye|hasta luego|nos vemos|hasta pronto)/i.test(lower)) return pick(localResponses.farewell);
-  if (/(que es|explica|definicion|significa|help|ayuda|puedes|como se)/i.test(lower)) return localResponses.help;
-  if (/(negrita|bold|italic|cursiva|markdown|formato)/i.test(lower)) {
-    return `**Sí, soporto formato markdown:**\n\n• **Negrita** con **asteriscos dobles**\n• *Cursiva* con *asterisco simple*\n• \`Código\` con \`backticks\`\n• [Enlaces](https://ejemplo.com)\n• Listas con * o 1.\n• Bloques de código con \`\`\`\n\nPrueba escribir: **esto es negrita**`;
+// ===== TEXT-TO-SPEECH =====
+function speak(text){
+  if(!state.ttsEnabled) return;
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text.replace(/[\*\`]/g,''));
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
   }
-  
-  return localResponses.default[state.msgs.length % localResponses.default.length];
+}
+
+$('#tts-global').onclick = () => {
+  state.ttsEnabled = !state.ttsEnabled;
+  $('#tts-global').style.opacity = state.ttsEnabled ? '1' : '0.6';
+  toast(state.ttsEnabled ? 'Lectura activada' : 'Lectura desactivada', 'info');
+};
+
+// ===== TEMA =====
+$('#theme-btn').onclick = () => {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  localStorage.setItem('athena-theme', isLight ? 'light' : 'dark');
+  toast(isLight ? 'Tema claro' : 'Tema oscuro', 'info');
+};
+if(localStorage.getItem('athena-theme') === 'light') document.body.classList.add('light');
+
+// ===== APIS CON PROXY CORS =====
+const CORS_PROXIES = ['https://api.allorigins.win/raw?url=','https://corsproxy.io/?',''];
+async function fetchWithCORS(url, options = {}){
+  for(const proxy of CORS_PROXIES){
+    try{
+      const ctrl = new AbortController();
+      const t = setTimeout(()=>ctrl.abort(), proxy ? 12000 : 10000);
+      const res = await fetch(proxy ? proxy + encodeURIComponent(url) : url, {...options, signal: ctrl.signal});
+      clearTimeout(t);
+      if(res.ok) return await res.text();
+    }catch(e){}
+  }
+  throw new Error('CORS failed');
+}
+
+async function callPollinations(prompt, ctx, model = 'openai'){
+  const context = ctx.length > 0 ? `Contexto:\n${ctx.slice(-5).map(m=>`${m.r==='u'?'Usuario':'Asistente'}: ${m.c}`).join('\n')}\n\n` : '';
+  const url = `https://text.pollinations.ai/${encodeURIComponent(context + prompt)}?model=${model}&seed=${Date.now()%1e6}&json=false`;
+  return (await fetchWithCORS(url, {headers:{'Accept':'text/plain'}})).trim();
+}
+
+async function testConnection(){
+  try{
+    const ctrl = new AbortController();
+    setTimeout(()=>ctrl.abort(), 8000);
+    const res = await fetch('https://text.pollinations.ai/hello?model=openai&seed=1', {signal:ctrl.signal, headers:{'Accept':'text/plain'}});
+    if(res.ok || res.status === 404) return true;
+  }catch{}
+  try{
+    const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://text.pollinations.ai/hello?model=openai&seed=1'));
+    if(res.ok) return true;
+  }catch{}
+  return false;
+}
+
+async function findWorkingConnection(){
+  status('Conectando','searching');eban.classList.remove('s');
+  if(await testConnection()){state.online=true;status('Conectado','ok');console.log('✅ Athena online');return true;}
+  state.online=false;status('Modo Offline','off');errMsg('Modo offline activado. Respuestas locales disponibles.');
+  toast('Modo offline: respuestas básicas disponibles','info');scheduleReconnect();return false;
+}
+function scheduleReconnect(){clearTimeout(state.timer);state.timer=setTimeout(()=>{if(!state.online&&navigator.onLine)findWorkingConnection()},10000);}
+
+// ===== FALLBACK LOCAL =====
+const localResponses = {
+  greetings:['Hola. ¿En qué puedo ayudarte?','Bienvenido. ¿Qué necesitas?','Saludos. Estoy lista para asistirte.'],
+  thanks:['De nada. ¿Algo más?','Un placer. ¿Necesitas algo adicional?','Con gusto. Aquí estaré.'],
+  about:`Soy Athena, un asistente de IA integrado en esta página.\n\n**Funciones:**\n• 🎤 Entrada por voz\n• 🔊 Lectura en voz alta (TTS)\n• 🎨 Tema claro/oscuro\n• 🔍 Comandos: /help, /clear, /export\n• 💬 Sugerencias rápidas\n• 📋 Copiar código con un clic\n• ⏱️ Tiempo de respuesta\n• 📤 Compartir conversación\n• 🔤 Ajustar tamaño de texto\n• 🌐 Pollinations.ai + fallback local\n\nPara información actualizada, consulta fuentes especializadas.`,
+  code:`Ejemplo en JavaScript:\n\n\`\`\`js\nfunction sumar(a,b){return a+b}\nconsole.log(sumar(5,3)) // 8\n\`\`\`\n\n**Consejos:**\n• Nombres descriptivos\n• Valida entradas\n• Maneja errores con try/catch\n\n¿Código específico que necesitas?`,
+  farewell:['Hasta luego. Vuelve cuando necesites.','Adiós. Que tengas un buen día.','Nos vemos. Disponible 24/7.'],
+  help:`**Comandos rápidos:**\n\n\`/help\` - Muestra esta ayuda\n\`/clear\` - Limpia la conversación\n\`/export\` - Exporta chat a archivo\n\`/tts on|off\` - Activa/desactiva lectura\n\`/theme\` - Cambia tema claro/oscuro\n\n**Formato markdown:**\n• **negrita** con \`**texto**\`\n• *cursiva* con \`*texto*\`\n• \`código\` con backticks\n• [enlaces](url)\n\n**Funciones:**\n✓ Preguntas generales ✓ Programación ✓ Explicaciones ✓ Contexto ✓ Exportar`,
+  default:['Interesante. ¿Podrías dar más contexto para una respuesta más precisa?','Entiendo. En modo offline mis respuestas son predefinidas. Para información crítica, verifica fuentes especializadas.','Buena pregunta. Haré mi mejor esfuerzo. ¿Algún aspecto específico en el que enfocarme?']
+};
+
+function getLocalResponse(input){
+  const lower=input.toLowerCase().trim();
+  const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+  if(/^(hola|hey|buenos|hi|hello|saludos)/i.test(lower))return pick(localResponses.greetings);
+  if(/(gracias|thank|grax|thanks)/i.test(lower))return pick(localResponses.thanks);
+  if(/(quien eres|que eres|who are you|como funcion|sobre ti|que es athena|funciones|puedes hacer)/i.test(lower))return localResponses.about;
+  if(/(codigo|program|javascript|python|html|css|funcion|function|ejemplo)/i.test(lower))return localResponses.code;
+  if(/(adios|chao|bye|hasta luego|nos vemos|hasta pronto)/i.test(lower))return pick(localResponses.farewell);
+  if(/(^\/help$|^\/ayuda$)/i.test(lower))return localResponses.help;
+  if(/(que es|explica|definicion|significa|help|ayuda|puedes|como se)/i.test(lower))return localResponses.help;
+  if(/(negrita|bold|italic|cursiva|markdown|formato)/i.test(lower))return `**Sí, soporto markdown:**\n\n• **Negrita** con \`**texto**\`\n• *Cursiva* con \`*texto*\`\n• \`Código\` con backticks\n• [Enlaces](https://ejemplo.com)\n• Listas con * o 1.\n\nPrueba: **esto es negrita**`;
+  return localResponses.default[state.msgs.length%localResponses.default.length];
+}
+
+// ===== COMANDOS RÁPIDOS =====
+function handleCommand(cmd){
+  const c=cmd.toLowerCase().trim();
+  if(c==='/clear'||c==='/limpiar'){clearChat();return true;}
+  if(c==='/export'||c==='/guardar'){exportChat();return true;}
+  if(c==='/help'||c==='/ayuda'){addMsg('b',localResponses.help,true);pushCtx('b',localResponses.help);return true;}
+  if(c.startsWith('/tts ')){
+    const val=c.split(' ')[1];
+    if(val==='on'||val==='1'){state.ttsEnabled=true;toast('Lectura activada','ok')}
+    else if(val==='off'||val==='0'){state.ttsEnabled=false;toast('Lectura desactivada','ok')}
+    $('#tts-global').style.opacity=state.ttsEnabled?'1':'0.6';
+    return true;
+  }
+  if(c==='/theme'){document.body.classList.toggle('light');toast(document.body.classList.contains('light')?'Tema claro':'Tema oscuro','info');return true;}
+  return false;
 }
 
 // ===== MENSAJES =====
-function addMsg(role, content, isMarkdown = false) {
-  const div = document.createElement('div');
-  div.className = `msg ${role === 'u' ? 'user' : 'bot'}`;
-  div.innerHTML = `<div class="av">${role === 'u' ? ICONS.user : ICONS.bot}</div><div style="flex:1;min-width:0"><div class="mc"></div><div class="meta"><span>${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span><div class="ma"><button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>${role === 'b' ? `<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>` : ''}</div></div></div>`;
-  const mc = div.querySelector('.mc');
-  if (role === 'b' && isMarkdown) {
-    mc.innerHTML = parseMarkdown(content);
-  } else {
-    mc.textContent = content;
-  }
-  const wel = chat.querySelector('.wel'); if (wel) wel.remove();
-  chat.appendChild(div); scrollEnd(); return div;
+function addMsg(role,content,isMarkdown=false){
+  const div=document.createElement('div');
+  div.className=`msg ${role==='u'?'user':'bot'}`;
+  const startTime=performance.now();
+  div.innerHTML=`<div class="av">${role==='u'?ICONS.user:ICONS.bot}</div><div style="flex:1;min-width:0"><div class="mc"></div><div class="meta"><span>${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><span class="resp-time"></span><div class="ma">${role==='b'?`<button class="tts-btn" aria-label="Leer">${ICONS.tts}</button>`:''}<button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>${role==='b'?`<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>`:''}</div></div></div>`;
+  const mc=div.querySelector('.mc');
+  if(role==='b'&&isMarkdown){mc.innerHTML=parseMarkdown(content);setupCopyCode(mc);}else mc.textContent=content;
+  const wel=chat.querySelector('.wel');if(wel)wel.remove();
+  chat.appendChild(div);
+  // Calcular tiempo de respuesta
+  const elapsed=((performance.now()-startTime)/1000).toFixed(1);
+  const timeEl=div.querySelector('.resp-time');
+  if(timeEl)timeEl.textContent=`${elapsed}s`;
+  // TTS button
+  const ttsBtn=div.querySelector('.tts-btn');
+  if(ttsBtn)ttsBtn.onclick=()=>speak(content);
+  scrollEnd();return div;
 }
 
-function showType() { if (chat.querySelector('.type')) return; const t = document.createElement('div'); t.className = 'msg bot type'; t.innerHTML = '<span></span><span></span><span></span>'; chat.appendChild(t); scrollEnd(); }
-function hideType() { chat.querySelector('.type')?.remove(); }
-function pushCtx(role, content) { state.ctx.push({ r: role, c: content }); if (state.ctx.length > 10) state.ctx = state.ctx.slice(-10); }
+function setupCopyCode(container){
+  container.querySelectorAll('.copy-code').forEach(btn=>{
+    btn.onclick=e=>{
+      e.preventDefault();
+      const code=btn.parentElement.querySelector('code').textContent;
+      copyTxt(code,'Código copiado');
+    };
+  });
+}
 
-// ===== ENVÍO PRINCIPAL =====
-async function send() {
-  const txt = inp.value.trim();
-  if (!txt || state.busy) return;
+function showType(){if(chat.querySelector('.type'))return;const t=document.createElement('div');t.className='msg bot type';t.innerHTML='<span></span><span></span><span></span>';chat.appendChild(t);scrollEnd()}
+function hideType(){chat.querySelector('.type')?.remove()}
+function pushCtx(role,content){state.ctx.push({r:role,c:content});if(state.ctx.length>10)state.ctx=state.ctx.slice(-10)}
+
+// ===== ENVÍO =====
+async function send(){
+  const txt=inp.value.trim();
+  if(!txt||state.busy)return;
   
-  console.log('📤 Enviando:', txt.slice(0, 50) + (txt.length > 50 ? '...' : ''));
-  
-  addMsg('u', txt);
-  inp.value = ''; adjH(); updC();
-  pushCtx('u', txt);
-  showType();
-  state.busy = true; sbtn.disabled = true;
-  
-  try {
-    let response, isMarkdown = false;
-    
-    if (state.online) {
-      // Intentar Pollinations.ai
-      try {
-        console.log('🌐 Llamando a Pollinations.ai...');
-        response = await callPollinations(txt, state.ctx, 'openai');
-        isMarkdown = true;
-        console.log('✅ Respuesta recibida:', response.slice(0, 100) + '...');
-      } catch (e) {
-        console.warn('❌ Pollinations failed:', e.message);
-        state.online = false;
-        status('Modo Offline', 'off');
-        // Fallback automático a local
-        response = getLocalResponse(txt);
-        isMarkdown = true;
-        errMsg('Conexión perdida. Usando modo offline.');
-      }
-    } else {
-      // Modo offline funcional
-      console.log('📦 Usando respuesta local');
-      response = getLocalResponse(txt);
-      isMarkdown = true;
-    }
-    
-    addMsg('b', response, isMarkdown);
-    pushCtx('b', response);
-    
-    // Si estaba offline y ahora funciona, actualizar estado
-    if (!state.online && navigator.onLine) {
-      findWorkingConnection().then(ok => {
-        if (ok) { toast('Conexión restaurada', 'ok'); }
-      });
-    }
-    
-  } catch (error) {
-    console.error('💥 Error crítico:', error);
-    state.online = false;
-    status('Modo Offline', 'off');
-    const fallback = getLocalResponse(txt);
-    addMsg('b', fallback, true);
-    pushCtx('b', fallback);
-    errMsg('Error de conexión. Respuesta local generada.');
-  } finally {
-    hideType(); state.busy = false; sbtn.disabled = false; scrollEnd();
+  // Comandos rápidos
+  if(txt.startsWith('/')){
+    if(handleCommand(txt)){inp.value='';adjH();updC();return;}
   }
+  
+  console.log('📤 Enviando:',txt.slice(0,50)+(txt.length>50?'...':''));
+  addMsg('u',txt);inp.value='';adjH();updC();pushCtx('u',txt);showType();state.busy=true;sbtn.disabled=true;
+  
+  try{
+    let response,isMarkdown=false;
+    if(state.online){
+      try{response=await callPollinations(txt,state.ctx,'openai');isMarkdown=true}catch(e){
+        console.warn('❌ Pollinations failed:',e.message);state.online=false;status('Modo Offline','off');
+        response=getLocalResponse(txt);isMarkdown=true;errMsg('Conexión perdida. Usando modo offline.');
+      }
+    }else{response=getLocalResponse(txt);isMarkdown=true}
+    addMsg('b',response,isMarkdown);pushCtx('b',response);
+    if(!state.online&&navigator.onLine)findWorkingConnection().then(ok=>{if(ok)toast('Conexión restaurada','ok')});
+  }catch(error){
+    console.error('💥 Error:',error);state.online=false;status('Modo Offline','off');
+    const fallback=getLocalResponse(txt);addMsg('b',fallback,true);pushCtx('b',fallback);errMsg('Error. Respuesta local generada.');
+  }finally{hideType();state.busy=false;sbtn.disabled=false;scrollEnd()}
 }
 
 // ===== REGENERAR =====
-async function regenerate() {
-  const lastUser = [...state.ctx].reverse().find(m => m.r === 'u');
-  if (!lastUser) return;
-  
-  state.ctx = state.ctx.filter((m, i, arr) => !(i === arr.length - 1 && m.r === 'b'));
-  const last = chat.lastElementChild;
-  if (last?.classList.contains('msg') && !last.classList.contains('user')) last.remove();
-  
-  state.busy = true; sbtn.disabled = true; showType();
-  
-  try {
-    let response, isMarkdown = false;
-    if (state.online) {
-      response = await callPollinations(lastUser.c, state.ctx, 'openai');
-      isMarkdown = true;
-    } else {
-      response = getLocalResponse(lastUser.c);
-      isMarkdown = true;
-    }
-    addMsg('b', response, isMarkdown);
-    pushCtx('b', response);
-    toast('Respuesta regenerada', 'ok');
-  } catch {
-    const fallback = getLocalResponse(lastUser.c);
-    addMsg('b', fallback, true);
-    pushCtx('b', fallback);
-  } finally {
-    hideType(); state.busy = false; sbtn.disabled = false; scrollEnd();
-  }
+async function regenerate(){
+  const lastUser=[...state.ctx].reverse().find(m=>m.r==='u');if(!lastUser)return;
+  state.ctx=state.ctx.filter((m,i,arr)=>!(i===arr.length-1&&m.r==='b'));
+  const last=chat.lastElementChild;if(last?.classList.contains('msg')&&!last.classList.contains('user'))last.remove();
+  state.busy=true;sbtn.disabled=true;showType();
+  try{
+    let response,isMarkdown=false;
+    if(state.online){response=await callPollinations(lastUser.c,state.ctx,'openai');isMarkdown=true}
+    else{response=getLocalResponse(lastUser.c);isMarkdown=true}
+    addMsg('b',response,isMarkdown);pushCtx('b',response);toast('Respuesta regenerada','ok')
+  }catch{const fallback=getLocalResponse(lastUser.c);addMsg('b',fallback,true);pushCtx('b',fallback)}
+  finally{hideType();state.busy=false;sbtn.disabled=false;scrollEnd()}
 }
 
 // ===== MENÚ ACCIONES =====
-function newChat() {
-  if (state.busy || (state.msgs.length && !confirm('¿Iniciar nueva conversación?'))) return;
-  state.msgs = []; state.ctx = [];
-  chat.innerHTML = '<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Nueva conversación</p></div>';
-  openModal(false); toast('Nueva conversación', 'ok'); inp.focus();
-}
-
-function clearChat() {
-  if (state.busy || !confirm('¿Eliminar toda la conversación?')) return;
-  state.msgs = []; state.ctx = [];
-  chat.innerHTML = '<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Chat limpiado</h2><p>¿Qué deseas preguntar?</p></div>';
-  openModal(false); toast('Chat eliminado', 'ok');
-}
-
-function exportChat() {
-  if (!state.msgs.length) { toast('No hay mensajes', 'info'); return; }
-  const c = state.msgs.map(m => `[${m.t || new Date().toLocaleTimeString()}] ${m.r === 'u' ? 'Tú' : 'Athena'}:\n${m.c}\n`).join('\n---\n\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([c], { type: 'text/plain' }));
-  a.download = `athena_${new Date().toISOString().slice(0,10)}.txt`;
-  a.click(); openModal(false); toast('Chat exportado', 'ok');
-}
-
-async function copyAll() {
-  if (!state.msgs.length) { toast('No hay mensajes', 'info'); return; }
-  await copyTxt(state.msgs.map(m => `${m.r === 'u' ? 'Tú' : 'Athena'}: ${m.c}`).join('\n\n'), 'Chat copiado');
+function newChat(){if(state.busy||(state.msgs.length&&!confirm('¿Nueva conversación?')))return;state.msgs=[];state.ctx=[];chat.innerHTML='<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Nueva conversación</p><div class="suggestions"><div class="sug-chip" data-prompt="¿Qué puedes hacer?">¿Qué puedes hacer?</div><div class="sug-chip" data-prompt="Explícame JavaScript">Explícame JavaScript</div><div class="sug-chip" data-prompt="Dame un ejemplo de código">Ejemplo de código</div><div class="sug-chip" data-prompt="Ayuda con mi tarea">Ayuda con tarea</div></div></div>';openModal(false);toast('Nueva conversación','ok');inp.focus()}
+function clearChat(){if(state.busy||!confirm('¿Eliminar conversación?'))return;state.msgs=[];state.ctx=[];chat.innerHTML='<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Chat limpiado</h2><p>¿Qué deseas preguntar?</p></div>';openModal(false);toast('Chat eliminado','ok')}
+function exportChat(){if(!state.msgs.length){toast('No hay mensajes','info');return}const c=state.msgs.map(m=>`[${m.t||new Date().toLocaleTimeString()}] ${m.r==='u'?'Tú':'Athena'}:\n${m.c}\n`).join('\n---\n\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));a.download=`athena_${new Date().toISOString().slice(0,10)}.txt`;a.click();openModal(false);toast('Chat exportado','ok')}
+async function copyAll(){if(!state.msgs.length){toast('No hay mensajes','info');return}await copyTxt(state.msgs.map(m=>`${m.r==='u'?'Tú':'Athena'}: ${m.c}`).join('\n\n'),'Chat copiado');openModal(false)}
+async function shareChat(){
+  if(!state.msgs.length){toast('No hay mensajes','info');return}
+  const text=state.msgs.map(m=>`${m.r==='u'?'Tú':'Athena'}: ${m.c}`).join('\n\n');
+  if(navigator.share){
+    try{await navigator.share({title:'Athena Chat',text:text});toast('Compartido','ok')}catch{}
+  }else{copyTxt(text,'Copiado para compartir');toast('Copiado al portapapeles','info')}
   openModal(false);
 }
 
+// ===== FONT SIZE =====
+function updateFontSize(){
+  document.documentElement.style.fontSize=`${state.fontSize}%`;
+  $('#font-val').textContent=`${state.fontSize}%`;
+  localStorage.setItem('athena-font',state.fontSize);
+}
+$('#font-up').onclick=()=>{if(state.fontSize<150){state.fontSize+=10;updateFontSize();toast(`Tamaño: ${state.fontSize}%`,'info')}}
+$('#font-down').onclick=()=>{if(state.fontSize>70){state.fontSize-=10;updateFontSize();toast(`Tamaño: ${state.fontSize}%`,'info')}}
+const savedFont=localStorage.getItem('athena-font');if(savedFont){state.fontSize=parseInt(savedFont);updateFontSize()}
+
+// ===== SUGGESTIONS =====
+chat.addEventListener('click',e=>{
+  const chip=e.target.closest('.sug-chip');
+  if(chip){inp.value=chip.dataset.prompt;adjH();updC();inp.focus()}
+});
+
 // ===== EVENTOS =====
-sbtn.onclick = send;
-inp.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } };
-inp.oninput = () => { adjH(); updC(); };
-$('#mbtn').onclick = () => openModal(true);
-$('#mclose').onclick = () => openModal(false);
-mover.onclick = e => { if (e.target === mover) openModal(false); };
-$('#nchat').onclick = newChat; $('#eport').onclick = exportChat; $('#call').onclick = copyAll; $('#cchat').onclick = clearChat;
-
-chat.onclick = e => {
-  const btn = e.target.closest('.mab'); if (!btn) return;
-  const mc = btn.closest('.msg').querySelector('.mc');
-  if (btn.dataset.a === 'c') copyTxt(mc.textContent || mc.innerText, 'Copiado');
-  if (btn.dataset.a === 'r') regenerate();
+sbtn.onclick=send;
+inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
+inp.oninput=()=>{adjH();updC()};
+$('#mbtn').onclick=()=>openModal(true);$('#mclose').onclick=()=>openModal(false);
+mover.onclick=e=>{if(e.target===mover)openModal(false)};
+$('#nchat').onclick=newChat;$('#eport').onclick=exportChat;$('#share-chat').onclick=shareChat;$('#call').onclick=copyAll;$('#cchat').onclick=clearChat;
+chat.onclick=e=>{
+  const btn=e.target.closest('.mab');if(!btn)return;
+  const mc=btn.closest('.msg').querySelector('.mc');
+  if(btn.dataset.a==='c')copyTxt(mc.textContent||mc.innerText,'Copiado');
+  if(btn.dataset.a==='r')regenerate();
 };
-
-// Touch para móvil: mantener presionado para copiar
-let hTimer;
-chat.ontouchstart = e => {
-  const mc = e.target.closest('.mc'); if (!mc) return;
-  hTimer = setTimeout(() => { copyTxt(mc.textContent || mc.innerText, 'Copiado'); navigator.vibrate?.(50); }, 600);
-};
-chat.ontouchend = chat.ontouchmove = () => clearTimeout(hTimer);
-
-// Reconectar al recuperar red
-window.ononline = () => { if (!state.online) { console.log('🌐 Red disponible, probando conexión...'); findWorkingConnection(); } };
-
-// Prevenir zoom en iOS
-inp.onfocus = () => { if (window.visualViewport) window.visualViewport.scale = 1; };
+let hTimer;chat.ontouchstart=e=>{const mc=e.target.closest('.mc');if(!mc)return;hTimer=setTimeout(()=>{copyTxt(mc.textContent||mc.innerText,'Copiado');navigator.vibrate?.(50)},600)};
+chat.ontouchend=chat.ontouchmove=()=>clearTimeout(hTimer);
+window.ononline=()=>{if(!state.online){console.log('🌐 Red disponible');findWorkingConnection()}};
+inp.onfocus=()=>{if(window.visualViewport)window.visualViewport.scale=1};
 
 // ===== INICIALIZACIÓN =====
 console.log('🚀 Athena Chat IA iniciando...');
-adjH(); updC();
-findWorkingConnection();
-inp.focus();
-
-// Debug: mostrar estado en consola
-setInterval(() => {
-  if (state.online) console.log('✅ Athena: Online');
-  else console.log('⚠️ Athena: Offline (modo funcional)');
-}, 30000);
+initVoice();adjH();updC();updateFontSize();
+findWorkingConnection();inp.focus();
 </script>
 </body>
 </html>
