@@ -4,15 +4,15 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
   <meta name="theme-color" content="#343541"/>
-  <title>Athena Chat IA</title>
+  <title>Athena Chat IA - Imágenes</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#343541;color:#ececf1;line-height:1.5;overflow:hidden}
     #app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:900px;margin:0 auto;width:100%}
-    header{padding:10px 16px;background:#202123;border-bottom:1px solid #4d4d4f;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10}
-    .htitle{display:flex;align-items:center;gap:10px;font-weight:600;font-size:1.1rem}
+    header{padding:10px 16px;background:#202123;border-bottom:1px solid #4d4d4f;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;gap:8px;flex-wrap:wrap}
+    .htitle{display:flex;align-items:center;gap:10px;font-weight:600;font-size:1rem;white-space:nowrap}
     .htitle svg{width:24px;height:24px}
-    .hactions{display:flex;align-items:center;gap:6px}
+    .hactions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
     .ibtn{background:transparent;border:none;color:#ececf1;width:36px;height:36px;border-radius:8px;display:grid;place-items:center;cursor:pointer;padding:6px;transition:background .2s}
     .ibtn:hover{background:#444654}.ibtn:active{background:#565869}.ibtn svg{width:20px;height:20px}
     #sbadge{font-size:.65rem;padding:3px 10px;border-radius:10px;font-weight:500;display:flex;align-items:center;gap:4px;white-space:nowrap}
@@ -20,7 +20,6 @@
     #sbadge.searching{background:#d69e2e;color:#0b1412;animation:pulse 1s infinite}
     #sbadge.off{background:#565869;color:#ececf1}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-    #sbadge svg{width:10px;height:10px}
     #chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
     .msg{display:flex;gap:10px;max-width:90%;animation:up .2s}
     @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -31,6 +30,7 @@
     .mc{padding:12px 14px;border-radius:16px;word-break:break-word;line-height:1.6;font-size:.95rem}
     .msg.bot .mc{background:#2b2d31;border-top-left-radius:4px}
     .msg.user .mc{background:#444654;border-top-right-radius:4px}
+    .mc img{max-width:100%;border-radius:12px;margin-top:8px;cursor:pointer;border:1px solid #565869}
     .mc b,.mc strong{font-weight:600;color:#fff}.mc i,.mc em{font-style:italic;color:#c5c5d2}
     .mc code{background:#1e1f29;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:.9em;color:#e0e0ff}
     .mc pre{background:#1e1f29;padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;font-family:monospace;font-size:.9em}
@@ -49,7 +49,12 @@
     #iwrap{display:flex;align-items:flex-end;gap:8px;background:#40414f;border-radius:14px;padding:6px 10px;border:1px solid #565869;transition:border-color .2s,box-shadow .2s}
     #iwrap:focus-within{border-color:#19c37d;box-shadow:0 0 0 2px rgba(25,195,125,.2)}
     #inp{flex:1;background:transparent;border:none;color:#ececf1;font-size:1rem;resize:none;max-height:120px;outline:none;padding:6px 2px;line-height:1.4;min-height:24px}
-    #inp::placeholder{color:#8e8ea0}#cc{font-size:.65rem;color:#8e8ea0;text-align:right;margin-top:3px}
+    #inp::placeholder{color:#8e8ea0}
+    #cc{font-size:.65rem;color:#8e8ea0;text-align:right;margin-top:3px}
+    .action-buttons{display:flex;gap:6px;align-items:center}
+    .icon-btn{background:#2b2d31;border:none;color:#ececf1;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;cursor:pointer;transition:background .2s}
+    .icon-btn:hover{background:#444654}
+    .icon-btn svg{width:18px;height:18px}
     #sbtn{background:#19c37d;border:none;color:#0b1412;width:36px;height:36px;border-radius:8px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:background .2s,transform .1s}
     #sbtn:hover{background:#1a9f66}#sbtn:active{transform:scale(.95)}
     #sbtn:disabled{background:#565869;cursor:not-allowed;transform:none;opacity:.5}#sbtn svg{width:18px;height:18px}
@@ -70,6 +75,9 @@
     .mitem{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:#2b2d31;cursor:pointer;font-size:.92rem;transition:background .15s}
     .mitem:hover{background:#444654}.mitem svg{width:18px;height:18px;flex-shrink:0}
     .mitem.danger{color:#f56565}.mitem.danger:hover{background:#4a2d35}
+    .model-selector{display:flex;align-items:center;gap:8px;margin:8px 0 12px;padding:8px;background:#2b2d31;border-radius:10px}
+    .model-selector select{background:#444654;border:1px solid #565869;color:#ececf1;padding:6px 10px;border-radius:8px;font-size:.85rem;cursor:pointer;flex:1}
+    .model-badge{font-size:.7rem;background:#19c37d20;padding:2px 6px;border-radius:12px;color:#19c37d}
     #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;gap:6px;pointer-events:none}
     .tst{background:#202123;color:#ececf1;padding:8px 14px;border-radius:8px;font-size:.85rem;box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;gap:6px;animation:up .3s,fo .3s 2.5s forwards;pointer-events:auto;max-width:85vw}
     .tst svg{width:16px;height:16px;flex-shrink:0}
@@ -82,39 +90,95 @@
 <div id="app">
   <header>
     <div class="htitle">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-      <span>Athena Chat IA</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+      <span>Athena IA</span>
     </div>
     <div class="hactions">
       <span id="sbadge" class="searching"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>Conectando</span>
-      <button class="ibtn" id="mbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <button class="ibtn" id="mbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     </div>
   </header>
-  <div id="chat"><div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Asistente conectado en tiempo real</p></div></div>
+  <div id="chat"><div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Texto e imágenes • Genera y comparte</p></div></div>
   <div id="ia">
     <div id="ebanner"></div>
-    <div id="iwrap"><textarea id="inp" placeholder="Escribe tu mensaje..." rows="1" maxlength="4000" aria-label="Mensaje"></textarea><button id="sbtn" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
+    <div id="iwrap">
+      <textarea id="inp" placeholder="Escribe tu mensaje..." rows="1" maxlength="4000" aria-label="Mensaje"></textarea>
+      <div class="action-buttons">
+        <button class="icon-btn" id="attachImageBtn" aria-label="Adjuntar imagen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><circle cx="8.5" cy="8.5" r="2.5"/><polyline points="21 15 16 10 5 21"/><line x1="16" y1="21" x2="2" y2="21"/></svg></button>
+        <button class="icon-btn" id="generateImageBtn" aria-label="Generar imagen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
+        <button id="sbtn" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
     <div id="cc">0 / 4000</div>
   </div>
 </div>
-<div class="mover" id="mover" role="dialog" aria-modal="true"><div class="mcont"><div class="mhead"><h3>Opciones</h3><button class="ibtn" id="mclose" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="mlist"><div class="mitem" id="nchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva conversacion</div><div class="mitem" id="eport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exportar chat</div><div class="mitem" id="call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar todo</div><div class="mitem danger" id="cchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar chat</div></div></div></div>
+<div class="mover" id="mover" role="dialog"><div class="mcont"><div class="mhead"><h3>Opciones avanzadas</h3><button class="ibtn" id="mclose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="model-selector"><span>Servicio IA:</span><select id="serviceSelect"><option value="pollinations_openai">Pollinations (OpenAI)</option><option value="pollinations_llama">Pollinations (Llama)</option><option value="pollinations_mistral">Pollinations (Mistral)</option><option value="pollinations_gemini">Pollinations (Gemini)</option><option value="huggingface">Hugging Face (gratis, token)</option><option value="fallback">Modo Local Inteligente</option></select></div>
+  <div id="hfTokenSection" style="display:none; margin-bottom:12px; background:#2b2d31; padding:8px; border-radius:8px"><input type="password" id="hfToken" placeholder="Token Hugging Face (ej: hf_...)" style="width:100%; background:#444654; border:none; padding:6px; border-radius:6px; color:#fff" autocomplete="off"><div style="font-size:.7rem; margin-top:4px; color:#8e8ea0">Usa modelo gratuito: microsoft/Phi-3-mini-4k-instruct</div></div>
+  <div class="mlist"><div class="mitem" id="nchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva conversación</div><div class="mitem" id="eport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exportar chat</div><div class="mitem" id="call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar todo</div><div class="mitem" id="clearStorage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar historial local</div><div class="mitem danger" id="cchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar chat (solo pantalla)</div></div></div></div>
 <div id="toast"></div>
 <script>
 const $=s=>document.querySelector(s);
 const chat=$('#chat'),inp=$('#inp'),sbtn=$('#sbtn'),cc=$('#cc'),sbadge=$('#sbadge'),eban=$('#ebanner'),mover=$('#mover'),toastEl=$('#toast');
-const state={msgs:[],ctx:[],busy:false,online:false,apiIdx:0,timer:null};
+const serviceSelect=$('#serviceSelect'),hfTokenDiv=$('#hfTokenSection'),hfTokenInput=$('#hfToken');
+const attachBtn=$('#attachImageBtn'),generateBtn=$('#generateImageBtn');
 
+// Estado
+let state={
+  msgs:[], ctx:[], busy:false, online:false, currentService:'pollinations_openai',
+  hfToken:'', lastReconnectTimer:null, persistentEnabled:true
+};
+
+// Cargar preferencias
+function loadStorage(){
+  try{
+    const saved=localStorage.getItem('athena_chat');
+    if(saved){
+      const data=JSON.parse(saved);
+      if(data.msgs && Array.isArray(data.msgs)) state.msgs=data.msgs;
+      if(data.ctx && Array.isArray(data.ctx)) state.ctx=data.ctx;
+      if(data.currentService) state.currentService=data.currentService;
+      if(data.hfToken) state.hfToken=data.hfToken;
+      renderMessagesFromState();
+    }
+    if(state.currentService) serviceSelect.value=state.currentService;
+    if(state.hfToken) hfTokenInput.value=state.hfToken;
+    updateHFVisibility();
+  }catch(e){console.warn(e);}
+}
+function saveStorage(){
+  if(!state.persistentEnabled) return;
+  const toStore={msgs:state.msgs, ctx:state.ctx, currentService:state.currentService, hfToken:state.hfToken};
+  localStorage.setItem('athena_chat',JSON.stringify(toStore));
+}
+function renderMessagesFromState(){
+  chat.innerHTML='';
+  if(state.msgs.length===0){
+    chat.innerHTML='<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Texto e imágenes • Genera y comparte</p></div>';
+    return;
+  }
+  for(const m of state.msgs){
+    const div=document.createElement('div');
+    div.className=`msg ${m.role==='u'?'user':'bot'}`;
+    div.innerHTML=`<div class="av">${m.role==='u'?ICONS.user:ICONS.bot}</div><div style="flex:1;min-width:0"><div class="mc"></div><div class="meta"><span>${m.time||''}</span><div class="ma"><button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>${m.role==='b' && !m.isImage ? `<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>` : ''}</div></div></div>`;
+    const mc=div.querySelector('.mc');
+    if(m.isImage){
+      mc.innerHTML=`<div>${m.text||''}</div><img src="${m.imageUrl}" alt="imagen generada" style="max-width:100%; border-radius:12px; margin-top:8px" loading="lazy" onclick="window.open(this.src)">`;
+    } else if(m.role==='b' && m.isMarkdown!==false) mc.innerHTML=parseMarkdown(m.content);
+    else mc.textContent=m.content;
+    chat.appendChild(div);
+  }
+  scrollEnd();
+}
+function scrollEnd(){chat.scrollTop=chat.scrollHeight;}
+
+// Iconos (sin emojis)
 const ICONS={
   bot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>',
   user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   regen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
-  ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
-  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
-  err:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
 };
-
-// ===== PARSING MARKDOWN =====
 function parseMarkdown(text){
   if(!text) return '';
   let html=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -127,344 +191,189 @@ function parseMarkdown(text){
     .replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>').replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
   return `<p>${html}</p>`;
 }
-
-function toast(msg,type='info'){
-  const el=document.createElement('div');el.className='tst';
-  el.innerHTML=ICONS[type]+`<span>${msg}</span>`;toastEl.appendChild(el);
-  setTimeout(()=>el.remove(),3000);
-}
-
+function toast(msg,type='info'){const e=document.createElement('div');e.className='tst';e.innerHTML=(ICONS[type]||ICONSInfo)+`<span>${msg}</span>`;toastEl.appendChild(e);setTimeout(()=>e.remove(),3000);}
+const ICONSInfo='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
 function status(txt,cls){sbadge.innerHTML=`<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>${txt}`;sbadge.className=cls;}
 function errMsg(msg){eban.textContent=msg;eban.classList.add('s');setTimeout(()=>eban.classList.remove('s'),5000);}
-function openModal(s){mover.classList.toggle('s',s);document.body.style.overflow=s?'hidden':'';}
-function scrollEnd(){chat.scrollTop=chat.scrollHeight;}
 function adjH(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px';}
 function updC(){const l=inp.value.length;cc.textContent=`${l}/4000`;cc.style.color=l>3800?'#f56565':'#8e8ea0';}
 async function copyTxt(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg,'ok')}catch{toast('Error','err')}}
 
-// ===== APIS CON PROXY CORS PARA FUNCIONAR DESDE FILE:// =====
-const CORS_PROXIES = [
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
-  '' // Sin proxy (intento directo primero)
-];
-
-async function fetchWithCORS(url, options = {}) {
-  // Intentar sin proxy primero (si el endpoint permite CORS)
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 10000);
-    const res = await fetch(url, { ...options, signal: ctrl.signal });
-    clearTimeout(t);
-    if (res.ok) return await res.text();
-  } catch (e) { console.log('Direct fetch failed:', e.message); }
-  
-  // Probar con proxies CORS
-  for (const proxy of CORS_PROXIES) {
-    if (!proxy) continue;
-    try {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 12000);
-      const res = await fetch(proxy + encodeURIComponent(url), { ...options, signal: ctrl.signal });
-      clearTimeout(t);
-      if (res.ok) return await res.text();
-    } catch (e) { console.log(`Proxy ${proxy} failed:`, e.message); }
-  }
-  throw new Error('CORS proxy failed');
+// ---- Funciones IA Texto (igual que antes) ----
+const CORS_PROXIES=['https://api.allorigins.win/raw?url=','https://corsproxy.io/?',''];
+async function fetchWithCORS(url, options={}){
+  try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),12000);const res=await fetch(url,{...options,signal:ctrl.signal});if(res.ok)return await res.text();}catch(e){}
+  for(const proxy of CORS_PROXIES){if(!proxy)continue;try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),13000);const res=await fetch(proxy+encodeURIComponent(url),{...options,signal:ctrl.signal});if(res.ok)return await res.text();}catch(e){}}
+  throw new Error('CORS fallback error');
 }
-
-// ===== POLLINATIONS.AI CONECTIVIDAD ROBUSTA =====
-async function callPollinations(prompt, ctx, model = 'openai') {
-  const context = ctx.length > 0 
-    ? `Contexto reciente:\n${ctx.slice(-5).map(m => `${m.r === 'u' ? 'Usuario' : 'Asistente'}: ${m.c}`).join('\n')}\n\n` 
-    : '';
-  const fullPrompt = encodeURIComponent(context + prompt);
-  const seed = Date.now() % 100000;
-  const url = `https://text.pollinations.ai/${fullPrompt}?model=${model}&seed=${seed}&json=false`;
-  
-  console.log('Calling Pollinations:', url.slice(0, 100) + '...');
-  const text = await fetchWithCORS(url, { headers: { 'Accept': 'text/plain' } });
+async function callPollinations(prompt,context,modelType='openai'){
+  const ctxText=context.length?`Contexto:\n${context.slice(-6).map(m=>`${m.r==='u'?'Usuario':'Asistente'}: ${m.c}`).join('\n')}\n\n`:'';
+  const full=encodeURIComponent(ctxText+prompt);
+  const seed=Date.now()%100000;
+  const modelMap={openai:'openai',llama:'llama',mistral:'mistral',gemini:'gemini'};
+  const model=modelMap[modelType]||'openai';
+  const url=`https://text.pollinations.ai/${full}?model=${model}&seed=${seed}&json=false`;
+  const text=await fetchWithCORS(url,{headers:{'Accept':'text/plain'}});
   return text.trim();
 }
-
-async function testConnection() {
-  try {
-    // Test simple con modelo ligero
-    const ctrl = new AbortController();
-    setTimeout(() => ctrl.abort(), 8000);
-    const url = 'https://text.pollinations.ai/hello?model=openai&seed=1';
-    const res = await fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'text/plain' } });
-    if (res.ok || res.status === 404) { // 404 también indica que el endpoint existe
-      console.log('Pollinations connection OK');
-      return true;
-    }
-  } catch (e) {
-    console.log('Direct connection test failed:', e.message);
-  }
-  
-  // Probar con proxy
-  try {
-    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://text.pollinations.ai/hello?model=openai&seed=1');
-    const res = await fetch(proxyUrl, { headers: { 'Accept': 'text/plain' } });
-    if (res.ok) {
-      console.log('Pollinations via proxy OK');
-      return true;
-    }
-  } catch (e) {
-    console.log('Proxy connection test failed:', e.message);
-  }
-  
-  return false;
+async function callHuggingFace(prompt,context,token){
+  if(!token)throw new Error('Token Hugging Face requerido');
+  const ctxText=context.length?`Historial:\n${context.slice(-5).map(m=>`${m.r==='u'?'Humano':'IA'}: ${m.c}`).join('\n')}\n\n`:'';
+  const fullPrompt=`${ctxText}Humano: ${prompt}\nIA:`;
+  const model='microsoft/Phi-3-mini-4k-instruct';
+  const response=await fetch(`https://api-inference.huggingface.co/models/${model}`,{
+    method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
+    body:JSON.stringify({inputs:fullPrompt,parameters:{max_new_tokens:500,temperature:0.7,return_full_text:false}})
+  });
+  if(!response.ok){const err=await response.text();throw new Error(`HF Error: ${response.status}`);}
+  const data=await response.json();
+  return data[0]?.generated_text?.trim() || "No se pudo generar respuesta.";
 }
-
-async function findWorkingConnection() {
-  status('Conectando', 'searching');
-  eban.classList.remove('s');
-  
-  const connected = await testConnection();
-  if (connected) {
-    state.online = true;
-    status('Conectado', 'ok');
-    console.log('✅ Athena online - Pollinations.ai disponible');
-    return true;
-  }
-  
-  // Si falla, activar modo offline funcional
-  state.online = false;
-  status('Modo Offline', 'off');
-  console.log('⚠️ Sin conexión a Pollinations - Usando modo offline funcional');
-  errMsg('Modo offline activado. Respuestas locales disponibles.');
-  toast('Modo offline: respuestas básicas disponibles', 'info');
-  scheduleReconnect();
-  return false;
+function getLocalResponse(input){
+  const lower=input.toLowerCase().trim();
+  const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+  if(/^(hola|hey|buenos|hi|hello)/i.test(lower)) return pick(['Hola. ¿En qué te ayudo?','Saludos, soy Athena.','Buenas, ¿qué necesitas?']);
+  if(/(gracias|thank)/i.test(lower)) return 'De nada. Estoy para ayudarte.';
+  if(/(quien eres|que eres|athena)/i.test(lower)) return 'Soy Athena, asistente IA con capacidades de texto e imágenes. Puedo generar imágenes con Pollinations y recibir imágenes que adjuntes.';
+  if(/(codigo|program|js|python)/i.test(lower)) return '**Ejemplo Python:**\n```python\nprint("Hola mundo")\n```\n¿Necesitas ayuda con algún lenguaje específico?';
+  if(/(adios|bye|chao)/i.test(lower)) return 'Hasta luego. Vuelve cuando quieras.';
+  return 'Interesante. Estoy en modo local, pero puedes activar Pollinations o Hugging Face para respuestas más avanzadas. ¿Algo más?';
 }
-
-function scheduleReconnect() {
-  clearTimeout(state.timer);
-  state.timer = setTimeout(() => {
-    if (!state.online && navigator.onLine) {
-      console.log('🔄 Reintentando conexión...');
-      findWorkingConnection();
-    }
-  }, 10000);
-}
-
-// ===== FALLBACK LOCAL FUNCIONAL (SÍ RESPONDE) =====
-const localResponses = {
-  greetings: ['Hola. ¿En qué puedo ayudarte?', 'Bienvenido. ¿Qué necesitas?', 'Saludos. Estoy lista para asistirte.'],
-  thanks: ['De nada. ¿Algo más en lo que pueda ayudar?', 'Un placer. ¿Necesitas algo adicional?', 'Con gusto. Aquí estaré si me requieres.'],
-  about: `Soy Athena, un asistente de IA integrado en esta página.\n\n**Características:**\n• Funciona sin instalación\n• Sin registro requerido\n• Conversación con contexto\n• **Conexión a Pollinations.ai** cuando hay internet\n• **Modo offline funcional** sin conexión\n\nPara información actualizada, consulta fuentes especializadas.`,
-  code: `Ejemplo de función en JavaScript:\n\n\`\`\`js\nfunction procesar(datos) {\n  return datos.filter(d => d.activo)\n    .map(d => d.valor * 2);\n}\nconsole.log(procesar([{activo:true,valor:5}]));\n\`\`\`\n\n**Consejos:**\n• Usa nombres descriptivos\n• Valida entradas del usuario\n• Maneja errores con try/catch\n\n¿Requieres ayuda con código específico?`,
-  farewell: ['Hasta luego. Vuelve cuando necesites asistencia.', 'Adiós. Que tengas un buen día.', 'Nos vemos. Estoy disponible cuando me necesites.'],
-  help: `**Funciones disponibles:**\n\n✓ Responder preguntas generales\n✓ Asistencia con programación\n✓ Explicaciones de conceptos\n✓ Mantener contexto de conversación\n✓ Exportar chat a texto\n✓ Formato markdown: **negrita**, *cursiva*, \`código\`\n\n**Limitaciones offline:**\n• Conocimiento predefinido\n• Sin acceso a internet\n• Sin ejecución de código\n\n¿En qué puedo asistirte?`,
-  default: [
-    'Interesante. Con mis capacidades actuales, puedo ofrecerte una perspectiva general. ¿Podrías proporcionar más contexto para una respuesta más precisa?',
-    'Entiendo tu consulta. En modo offline, mis respuestas se basan en patrones predefinidos. Para información crítica, verifica con fuentes especializadas.',
-    'Buena pregunta. Haré mi mejor esfuerzo con los recursos disponibles. ¿Hay algún aspecto específico en el que pueda enfocarme?'
-  ]
-};
-
-function getLocalResponse(input) {
-  const lower = input.toLowerCase().trim();
-  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-  
-  if (/^(hola|hey|buenos|hi|hello|saludos)/i.test(lower)) return pick(localResponses.greetings);
-  if (/(gracias|thank|grax|thanks)/i.test(lower)) return pick(localResponses.thanks);
-  if (/(quien eres|que eres|who are you|como funcion|sobre ti|que es athena)/i.test(lower)) return localResponses.about;
-  if (/(codigo|program|javascript|python|html|css|funcion|function|ejemplo)/i.test(lower)) return localResponses.code;
-  if (/(adios|chao|bye|hasta luego|nos vemos|hasta pronto)/i.test(lower)) return pick(localResponses.farewell);
-  if (/(que es|explica|definicion|significa|help|ayuda|puedes|como se)/i.test(lower)) return localResponses.help;
-  if (/(negrita|bold|italic|cursiva|markdown|formato)/i.test(lower)) {
-    return `**Sí, soporto formato markdown:**\n\n• **Negrita** con **asteriscos dobles**\n• *Cursiva* con *asterisco simple*\n• \`Código\` con \`backticks\`\n• [Enlaces](https://ejemplo.com)\n• Listas con * o 1.\n• Bloques de código con \`\`\`\n\nPrueba escribir: **esto es negrita**`;
-  }
-  
-  return localResponses.default[state.msgs.length % localResponses.default.length];
-}
-
-// ===== MENSAJES =====
-function addMsg(role, content, isMarkdown = false) {
-  const div = document.createElement('div');
-  div.className = `msg ${role === 'u' ? 'user' : 'bot'}`;
-  div.innerHTML = `<div class="av">${role === 'u' ? ICONS.user : ICONS.bot}</div><div style="flex:1;min-width:0"><div class="mc"></div><div class="meta"><span>${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span><div class="ma"><button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>${role === 'b' ? `<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>` : ''}</div></div></div>`;
-  const mc = div.querySelector('.mc');
-  if (role === 'b' && isMarkdown) {
-    mc.innerHTML = parseMarkdown(content);
-  } else {
-    mc.textContent = content;
-  }
-  const wel = chat.querySelector('.wel'); if (wel) wel.remove();
-  chat.appendChild(div); scrollEnd(); return div;
-}
-
-function showType() { if (chat.querySelector('.type')) return; const t = document.createElement('div'); t.className = 'msg bot type'; t.innerHTML = '<span></span><span></span><span></span>'; chat.appendChild(t); scrollEnd(); }
-function hideType() { chat.querySelector('.type')?.remove(); }
-function pushCtx(role, content) { state.ctx.push({ r: role, c: content }); if (state.ctx.length > 10) state.ctx = state.ctx.slice(-10); }
-
-// ===== ENVÍO PRINCIPAL =====
-async function send() {
-  const txt = inp.value.trim();
-  if (!txt || state.busy) return;
-  
-  console.log('📤 Enviando:', txt.slice(0, 50) + (txt.length > 50 ? '...' : ''));
-  
-  addMsg('u', txt);
-  inp.value = ''; adjH(); updC();
-  pushCtx('u', txt);
-  showType();
-  state.busy = true; sbtn.disabled = true;
-  
-  try {
-    let response, isMarkdown = false;
-    
-    if (state.online) {
-      // Intentar Pollinations.ai
-      try {
-        console.log('🌐 Llamando a Pollinations.ai...');
-        response = await callPollinations(txt, state.ctx, 'openai');
-        isMarkdown = true;
-        console.log('✅ Respuesta recibida:', response.slice(0, 100) + '...');
-      } catch (e) {
-        console.warn('❌ Pollinations failed:', e.message);
-        state.online = false;
-        status('Modo Offline', 'off');
-        // Fallback automático a local
-        response = getLocalResponse(txt);
-        isMarkdown = true;
-        errMsg('Conexión perdida. Usando modo offline.');
-      }
-    } else {
-      // Modo offline funcional
-      console.log('📦 Usando respuesta local');
-      response = getLocalResponse(txt);
-      isMarkdown = true;
-    }
-    
-    addMsg('b', response, isMarkdown);
-    pushCtx('b', response);
-    
-    // Si estaba offline y ahora funciona, actualizar estado
-    if (!state.online && navigator.onLine) {
-      findWorkingConnection().then(ok => {
-        if (ok) { toast('Conexión restaurada', 'ok'); }
-      });
-    }
-    
-  } catch (error) {
-    console.error('💥 Error crítico:', error);
-    state.online = false;
-    status('Modo Offline', 'off');
-    const fallback = getLocalResponse(txt);
-    addMsg('b', fallback, true);
-    pushCtx('b', fallback);
-    errMsg('Error de conexión. Respuesta local generada.');
-  } finally {
-    hideType(); state.busy = false; sbtn.disabled = false; scrollEnd();
+async function callAI(prompt,context,serviceId){
+  switch(serviceId){
+    case 'pollinations_openai': return await callPollinations(prompt,context,'openai');
+    case 'pollinations_llama': return await callPollinations(prompt,context,'llama');
+    case 'pollinations_mistral': return await callPollinations(prompt,context,'mistral');
+    case 'pollinations_gemini': return await callPollinations(prompt,context,'gemini');
+    case 'huggingface': return await callHuggingFace(prompt,context,state.hfToken);
+    default: return getLocalResponse(prompt);
   }
 }
-
-// ===== REGENERAR =====
-async function regenerate() {
-  const lastUser = [...state.ctx].reverse().find(m => m.r === 'u');
-  if (!lastUser) return;
-  
-  state.ctx = state.ctx.filter((m, i, arr) => !(i === arr.length - 1 && m.r === 'b'));
-  const last = chat.lastElementChild;
-  if (last?.classList.contains('msg') && !last.classList.contains('user')) last.remove();
-  
-  state.busy = true; sbtn.disabled = true; showType();
-  
-  try {
-    let response, isMarkdown = false;
-    if (state.online) {
-      response = await callPollinations(lastUser.c, state.ctx, 'openai');
-      isMarkdown = true;
-    } else {
-      response = getLocalResponse(lastUser.c);
-      isMarkdown = true;
-    }
-    addMsg('b', response, isMarkdown);
-    pushCtx('b', response);
-    toast('Respuesta regenerada', 'ok');
-  } catch {
-    const fallback = getLocalResponse(lastUser.c);
-    addMsg('b', fallback, true);
-    pushCtx('b', fallback);
-  } finally {
-    hideType(); state.busy = false; sbtn.disabled = false; scrollEnd();
-  }
+async function testConnection(){ try{await callPollinations('ping',[],'openai');return true;}catch(e){return false;} }
+async function findWorkingConnection(){
+  status('Conectando','searching');
+  const ok=await testConnection();
+  if(ok){state.online=true;status('Online','ok');toast('Conectado a Pollinations','ok');}
+  else{state.online=false;status('Modo offline','off');errMsg('Sin conexión a servicios cloud. Usando respuestas locales.');scheduleReconnect();}
+}
+function scheduleReconnect(){clearTimeout(state.lastReconnectTimer);state.lastReconnectTimer=setTimeout(()=>{if(!state.online&&navigator.onLine)findWorkingConnection();},15000);}
+function pushCtx(role,content){state.ctx.push({r:role,c:content});if(state.ctx.length>12)state.ctx=state.ctx.slice(-12);saveStorage();}
+function addMsgToState(role,content,isMarkdown=true,isImage=false,imageUrl='',text=''){
+  const msg={role:role==='u'?'u':'b',content:content,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),isMarkdown:isMarkdown};
+  if(isImage){msg.isImage=true;msg.imageUrl=imageUrl;msg.text=text||content;}
+  state.msgs.push(msg);
+  if(role==='u')pushCtx('u',content);
+  else pushCtx('b',content);
+  renderMessagesFromState();
+  saveStorage();
+}
+function showType(){if(chat.querySelector('.type'))return;const t=document.createElement('div');t.className='msg bot type';t.innerHTML='<span></span><span></span><span></span>';chat.appendChild(t);scrollEnd();}
+function hideType(){chat.querySelector('.type')?.remove();}
+async function send(){
+  const txt=inp.value.trim();
+  if(!txt||state.busy)return;
+  addMsgToState('u',txt,false);
+  inp.value='';adjH();updC();
+  showType();state.busy=true;sbtn.disabled=true;
+  try{
+    let resp=await callAI(txt,state.ctx,state.currentService);
+    addMsgToState('b',resp,true);
+    if(!state.online&&navigator.onLine) findWorkingConnection();
+  }catch(e){addMsgToState('b','Error en la respuesta. Intenta de nuevo.',true);}
+  finally{hideType();state.busy=false;sbtn.disabled=false;scrollEnd();}
+}
+async function regenerate(){
+  const lastUser=[...state.ctx].reverse().find(m=>m.r==='u');
+  if(!lastUser)return;
+  state.ctx=state.ctx.filter((m,i,arr)=>!(i===arr.length-1&&m.r==='b'));
+  if(state.msgs.length&&state.msgs[state.msgs.length-1].role==='b')state.msgs.pop();
+  saveStorage();renderMessagesFromState();
+  state.busy=true;showType();sbtn.disabled=true;
+  try{
+    let resp=await callAI(lastUser.c,state.ctx,state.currentService);
+    addMsgToState('b',resp,true);
+    toast('Respuesta regenerada','ok');
+  }catch(e){addMsgToState('b','Error regenerando.','true');}
+  finally{hideType();state.busy=false;sbtn.disabled=false;}
 }
 
-// ===== MENÚ ACCIONES =====
-function newChat() {
-  if (state.busy || (state.msgs.length && !confirm('¿Iniciar nueva conversación?'))) return;
-  state.msgs = []; state.ctx = [];
-  chat.innerHTML = '<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Nueva conversación</p></div>';
-  openModal(false); toast('Nueva conversación', 'ok'); inp.focus();
+// ----- GENERACIÓN DE IMÁGENES -----
+async function generateImage(prompt){
+  if(!prompt.trim()){toast('Escribe una descripción para la imagen','info'); return null;}
+  const encoded=encodeURIComponent(prompt);
+  const url=`https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&seed=${Date.now()}`;
+  // Mostrar imagen generada directamente (Pollinations devuelve imagen)
+  return url;
+}
+async function handleGenerateImage(){
+  if(state.busy){toast('Espera a que termine la conversación actual','info');return;}
+  const description=prompt('Describe la imagen que quieres generar:');
+  if(!description) return;
+  showType(); state.busy=true; sbtn.disabled=true;
+  try{
+    const imageUrl=await generateImage(description);
+    if(imageUrl){
+      // Añadir mensaje del bot con la imagen generada
+      addMsgToState('b', `Imagen generada: "${description}"`, true, true, imageUrl, `Imagen: ${description}`);
+      toast('Imagen generada','ok');
+    } else throw new Error('No se pudo generar');
+  } catch(e){ toast('Error generando imagen','err'); addMsgToState('b','No se pudo generar la imagen. Intenta con otra descripción.',true);}
+  finally{ hideType(); state.busy=false; sbtn.disabled=false; }
 }
 
-function clearChat() {
-  if (state.busy || !confirm('¿Eliminar toda la conversación?')) return;
-  state.msgs = []; state.ctx = [];
-  chat.innerHTML = '<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Chat limpiado</h2><p>¿Qué deseas preguntar?</p></div>';
-  openModal(false); toast('Chat eliminado', 'ok');
+// ----- ENVIAR IMAGEN LOCAL (adjuntar) -----
+function handleAttachImage(){
+  const input=document.createElement('input');
+  input.type='file';
+  input.accept='image/*';
+  input.onchange=async (e)=>{
+    const file=e.target.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=async (ev)=>{
+      const dataUrl=ev.target.result;
+      // Mostrar imagen en el chat como mensaje del usuario
+      addMsgToState('u', 'Imagen adjuntada', false, true, dataUrl, '');
+      // Respuesta del bot "recibiendo"
+      addMsgToState('b', 'Imagen recibida. No tengo visión artificial, pero puedes pedirme que genere imágenes similares.', true);
+      toast('Imagen adjuntada','ok');
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
 }
 
-function exportChat() {
-  if (!state.msgs.length) { toast('No hay mensajes', 'info'); return; }
-  const c = state.msgs.map(m => `[${m.t || new Date().toLocaleTimeString()}] ${m.r === 'u' ? 'Tú' : 'Athena'}:\n${m.c}\n`).join('\n---\n\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([c], { type: 'text/plain' }));
-  a.download = `athena_${new Date().toISOString().slice(0,10)}.txt`;
-  a.click(); openModal(false); toast('Chat exportado', 'ok');
-}
+// UI helpers
+function updateHFVisibility(){hfTokenDiv.style.display=serviceSelect.value==='huggingface'?'block':'none';}
+function openModal(s){mover.classList.toggle('s',s);document.body.style.overflow=s?'hidden':'';}
+function newChat(){if(state.busy||(state.msgs.length&&!confirm('¿Nueva conversación? Se guardará la actual.')))return;state.msgs=[];state.ctx=[];saveStorage();renderMessagesFromState();openModal(false);toast('Nueva conversación','ok');inp.focus();}
+function clearChat(){if(state.busy||!confirm('¿Limpiar chat visual? El historial se perderá en pantalla.'))return;state.msgs=[];state.ctx=[];saveStorage();renderMessagesFromState();openModal(false);toast('Chat limpiado','ok');}
+function clearStorageAll(){if(confirm('Eliminar TODOS los datos guardados (historial, preferencias). ¿Continuar?')){localStorage.removeItem('athena_chat');state.msgs=[];state.ctx=[];state.hfToken='';hfTokenInput.value='';renderMessagesFromState();toast('Datos locales eliminados','ok');}}
+function exportChat(){if(!state.msgs.length){toast('No hay mensajes','info');return;}const c=state.msgs.map(m=>`[${m.time}] ${m.role==='u'?'Tú':'Athena'}:\n${m.content}\n`).join('---\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));a.download=`athena_${new Date().toISOString().slice(0,10)}.txt`;a.click();openModal(false);toast('Exportado','ok');}
+async function copyAll(){if(!state.msgs.length){toast('No hay mensajes','info');return;}await copyTxt(state.msgs.map(m=>`${m.role==='u'?'Tú':'Athena'}: ${m.content}`).join('\n\n'),'Chat copiado');openModal(false);}
 
-async function copyAll() {
-  if (!state.msgs.length) { toast('No hay mensajes', 'info'); return; }
-  await copyTxt(state.msgs.map(m => `${m.r === 'u' ? 'Tú' : 'Athena'}: ${m.c}`).join('\n\n'), 'Chat copiado');
-  openModal(false);
-}
+// Eventos
+sbtn.onclick=send;
+inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}};
+inp.oninput=()=>{adjH();updC();};
+$('#mbtn').onclick=()=>openModal(true);
+$('#mclose').onclick=()=>openModal(false);
+mover.onclick=e=>{if(e.target===mover)openModal(false);};
+$('#nchat').onclick=newChat;
+$('#eport').onclick=exportChat;
+$('#call').onclick=copyAll;
+$('#cchat').onclick=clearChat;
+$('#clearStorage').onclick=clearStorageAll;
+serviceSelect.onchange=()=>{state.currentService=serviceSelect.value;updateHFVisibility();saveStorage();toast(`Servicio cambiado a ${serviceSelect.options[serviceSelect.selectedIndex].text}`,'ok');};
+hfTokenInput.onchange=()=>{state.hfToken=hfTokenInput.value.trim();saveStorage();toast('Token HF actualizado','ok');};
+attachBtn.onclick=handleAttachImage;
+generateBtn.onclick=handleGenerateImage;
+chat.onclick=e=>{const btn=e.target.closest('.mab');if(!btn)return;const mc=btn.closest('.msg').querySelector('.mc');if(btn.dataset.a==='c')copyTxt(mc.textContent||mc.innerText,'Copiado');if(btn.dataset.a==='r')regenerate();};
+let hTimer;chat.ontouchstart=e=>{const mc=e.target.closest('.mc');if(!mc)return;hTimer=setTimeout(()=>{copyTxt(mc.textContent||mc.innerText,'Copiado');},600);};chat.ontouchend=chat.ontouchmove=()=>clearTimeout(hTimer);
+window.ononline=()=>{if(!state.online)findWorkingConnection();};
 
-// ===== EVENTOS =====
-sbtn.onclick = send;
-inp.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } };
-inp.oninput = () => { adjH(); updC(); };
-$('#mbtn').onclick = () => openModal(true);
-$('#mclose').onclick = () => openModal(false);
-mover.onclick = e => { if (e.target === mover) openModal(false); };
-$('#nchat').onclick = newChat; $('#eport').onclick = exportChat; $('#call').onclick = copyAll; $('#cchat').onclick = clearChat;
-
-chat.onclick = e => {
-  const btn = e.target.closest('.mab'); if (!btn) return;
-  const mc = btn.closest('.msg').querySelector('.mc');
-  if (btn.dataset.a === 'c') copyTxt(mc.textContent || mc.innerText, 'Copiado');
-  if (btn.dataset.a === 'r') regenerate();
-};
-
-// Touch para móvil: mantener presionado para copiar
-let hTimer;
-chat.ontouchstart = e => {
-  const mc = e.target.closest('.mc'); if (!mc) return;
-  hTimer = setTimeout(() => { copyTxt(mc.textContent || mc.innerText, 'Copiado'); navigator.vibrate?.(50); }, 600);
-};
-chat.ontouchend = chat.ontouchmove = () => clearTimeout(hTimer);
-
-// Reconectar al recuperar red
-window.ononline = () => { if (!state.online) { console.log('🌐 Red disponible, probando conexión...'); findWorkingConnection(); } };
-
-// Prevenir zoom en iOS
-inp.onfocus = () => { if (window.visualViewport) window.visualViewport.scale = 1; };
-
-// ===== INICIALIZACIÓN =====
-console.log('🚀 Athena Chat IA iniciando...');
-adjH(); updC();
-findWorkingConnection();
-inp.focus();
-
-// Debug: mostrar estado en consola
-setInterval(() => {
-  if (state.online) console.log('✅ Athena: Online');
-  else console.log('⚠️ Athena: Offline (modo funcional)');
-}, 30000);
+// Inicializar
+loadStorage();updateHFVisibility();findWorkingConnection();adjH();updC();inp.focus();
 </script>
 </body>
 </html>
