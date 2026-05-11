@@ -20,7 +20,8 @@
     #sbadge.searching{background:#d69e2e;color:#0b1412;animation:pulse 1s infinite}
     #sbadge.off{background:#565869;color:#ececf1}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-    #chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
+    #chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;position:relative}
+    #chat.dragover::after{content:"Suelta la imagen aquí";position:absolute;inset:0;background:rgba(25,195,125,0.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#19c37d;z-index:5;border:2px dashed #19c37d;border-radius:12px}
     .msg{display:flex;gap:10px;max-width:90%;animation:up .2s}
     @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     .msg.bot{align-self:flex-start}.msg.user{align-self:flex-end;flex-direction:row-reverse}
@@ -84,6 +85,9 @@
     @keyframes fo{to{opacity:0;transform:translateY(-8px)}}
     ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#565869;border-radius:3px}
     @media(max-width:480px){.msg{max-width:95%}.mc{font-size:.9rem}header{padding:8px 12px}#ia{padding:8px 12px 12px}}
+    /* Galería de imágenes */
+    .img-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:8px}
+    .img-gallery img{width:100%;height:80px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid #4d4d4f}
   </style>
 </head>
 <body>
@@ -98,11 +102,11 @@
       <button class="ibtn" id="mbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     </div>
   </header>
-  <div id="chat"><div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Texto e imágenes • Genera y comparte</p></div></div>
+  <div id="chat"><div class="wel" id="welcomeScreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Texto e imágenes • Genera y comparte</p><p style="font-size:.75rem;margin-top:12px">Comandos: /img [descripción] · /clear · /help</p></div></div>
   <div id="ia">
     <div id="ebanner"></div>
     <div id="iwrap">
-      <textarea id="inp" placeholder="Escribe tu mensaje..." rows="1" maxlength="4000" aria-label="Mensaje"></textarea>
+      <textarea id="inp" placeholder="Escribe tu mensaje... (o usa /img para generar imagen)" rows="1" maxlength="4000" aria-label="Mensaje"></textarea>
       <div class="action-buttons">
         <button class="icon-btn" id="attachImageBtn" aria-label="Adjuntar imagen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><circle cx="8.5" cy="8.5" r="2.5"/><polyline points="21 15 16 10 5 21"/><line x1="16" y1="21" x2="2" y2="21"/></svg></button>
         <button class="icon-btn" id="generateImageBtn" aria-label="Generar imagen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
@@ -115,95 +119,149 @@
 <div class="mover" id="mover" role="dialog"><div class="mcont"><div class="mhead"><h3>Opciones avanzadas</h3><button class="ibtn" id="mclose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
   <div class="model-selector"><span>Servicio IA:</span><select id="serviceSelect"><option value="pollinations_openai">Pollinations (OpenAI)</option><option value="pollinations_llama">Pollinations (Llama)</option><option value="pollinations_mistral">Pollinations (Mistral)</option><option value="pollinations_gemini">Pollinations (Gemini)</option><option value="huggingface">Hugging Face (gratis, token)</option><option value="fallback">Modo Local Inteligente</option></select></div>
   <div id="hfTokenSection" style="display:none; margin-bottom:12px; background:#2b2d31; padding:8px; border-radius:8px"><input type="password" id="hfToken" placeholder="Token Hugging Face (ej: hf_...)" style="width:100%; background:#444654; border:none; padding:6px; border-radius:6px; color:#fff" autocomplete="off"><div style="font-size:.7rem; margin-top:4px; color:#8e8ea0">Usa modelo gratuito: microsoft/Phi-3-mini-4k-instruct</div></div>
-  <div class="mlist"><div class="mitem" id="nchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva conversación</div><div class="mitem" id="eport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exportar chat</div><div class="mitem" id="call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar todo</div><div class="mitem" id="clearStorage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar historial local</div><div class="mitem danger" id="cchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar chat (solo pantalla)</div></div></div></div>
+  <div class="mlist">
+    <div class="mitem" id="nchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva conversación</div>
+    <div class="mitem" id="galleryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Galería de imágenes generadas</div>
+    <div class="mitem" id="eport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exportar chat</div>
+    <div class="mitem" id="call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar todo</div>
+    <div class="mitem" id="clearStorage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar historial local</div>
+    <div class="mitem danger" id="cchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Limpiar chat (solo pantalla)</div>
+  </div></div></div>
 <div id="toast"></div>
 <script>
+// =================== Athena Chat IA Mejorado ===================
 const $=s=>document.querySelector(s);
-const chat=$('#chat'),inp=$('#inp'),sbtn=$('#sbtn'),cc=$('#cc'),sbadge=$('#sbadge'),eban=$('#ebanner'),mover=$('#mover'),toastEl=$('#toast');
-const serviceSelect=$('#serviceSelect'),hfTokenDiv=$('#hfTokenSection'),hfTokenInput=$('#hfToken');
-const attachBtn=$('#attachImageBtn'),generateBtn=$('#generateImageBtn');
+const chat=$('#chat'),inp=$('#inp'),sbtn=$('#sbtn'),cc=$('#cc'),sbadge=$('#sbadge'),
+      eban=$('#ebanner'),mover=$('#mover'),toastEl=$('#toast'),
+      serviceSelect=$('#serviceSelect'),hfTokenDiv=$('#hfTokenSection'),hfTokenInput=$('#hfToken'),
+      attachBtn=$('#attachImageBtn'),generateBtn=$('#generateImageBtn'),
+      galleryBtn=$('#galleryBtn');
 
-// Estado
-let state={
-  msgs:[], ctx:[], busy:false, online:false, currentService:'pollinations_openai',
-  hfToken:'', lastReconnectTimer:null, persistentEnabled:true
+// Estado global
+const state={
+  msgs:[],
+  ctx:[],
+  busy:false,
+  online:false,
+  currentService:'pollinations_openai',
+  hfToken:'',
+  lastReconnectTimer:null,
+  persistentEnabled:true,
+  imageGallery:[]  // URLs de imágenes generadas
 };
 
-// Cargar preferencias
-function loadStorage(){
-  try{
-    const saved=localStorage.getItem('athena_chat');
-    if(saved){
-      const data=JSON.parse(saved);
-      if(data.msgs && Array.isArray(data.msgs)) state.msgs=data.msgs;
-      if(data.ctx && Array.isArray(data.ctx)) state.ctx=data.ctx;
-      if(data.currentService) state.currentService=data.currentService;
-      if(data.hfToken) state.hfToken=data.hfToken;
-      renderMessagesFromState();
-    }
-    if(state.currentService) serviceSelect.value=state.currentService;
-    if(state.hfToken) hfTokenInput.value=state.hfToken;
-    updateHFVisibility();
-  }catch(e){console.warn(e);}
-}
-function saveStorage(){
-  if(!state.persistentEnabled) return;
-  const toStore={msgs:state.msgs, ctx:state.ctx, currentService:state.currentService, hfToken:state.hfToken};
-  localStorage.setItem('athena_chat',JSON.stringify(toStore));
-}
-function renderMessagesFromState(){
-  chat.innerHTML='';
-  if(state.msgs.length===0){
-    chat.innerHTML='<div class="wel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Texto e imágenes • Genera y comparte</p></div>';
-    return;
-  }
-  for(const m of state.msgs){
-    const div=document.createElement('div');
-    div.className=`msg ${m.role==='u'?'user':'bot'}`;
-    div.innerHTML=`<div class="av">${m.role==='u'?ICONS.user:ICONS.bot}</div><div style="flex:1;min-width:0"><div class="mc"></div><div class="meta"><span>${m.time||''}</span><div class="ma"><button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>${m.role==='b' && !m.isImage ? `<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>` : ''}</div></div></div>`;
-    const mc=div.querySelector('.mc');
-    if(m.isImage){
-      mc.innerHTML=`<div>${m.text||''}</div><img src="${m.imageUrl}" alt="imagen generada" style="max-width:100%; border-radius:12px; margin-top:8px" loading="lazy" onclick="window.open(this.src)">`;
-    } else if(m.role==='b' && m.isMarkdown!==false) mc.innerHTML=parseMarkdown(m.content);
-    else mc.textContent=m.content;
-    chat.appendChild(div);
-  }
-  scrollEnd();
-}
-function scrollEnd(){chat.scrollTop=chat.scrollHeight;}
-
-// Iconos (sin emojis)
+// ============ Utilidades ============
 const ICONS={
   bot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>',
   user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   regen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+  err:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
 };
+function toast(msg,type='info'){const e=document.createElement('div');e.className='tst';e.innerHTML=(ICONS[type]||ICONS.info)+`<span>${msg}</span>`;toastEl.appendChild(e);setTimeout(()=>e.remove(),3000);}
+function escapeHTML(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
+function sanitizeURL(url){try{const u=new URL(url);if(u.protocol!=='http:'&&u.protocol!=='https:')return '#';return u.href;}catch{return '#';}}
 function parseMarkdown(text){
   if(!text) return '';
-  let html=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*\*(.+?)\*\*\*/g,'<b><i>$1</i></b>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>')
-    .replace(/`{3}(\w*)\n?([\s\S]*?)`{3}/g,'<pre><code>$2</code></pre>').replace(/`(.+?)`/g,'<code>$1</code>')
-    .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+  let html=escapeHTML(text)
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<b><i>$1</i></b>')
+    .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+    .replace(/\*(.+?)\*/g,'<i>$1</i>')
+    .replace(/`{3}(\w*)\n?([\s\S]*?)`{3}/g,'<pre><code>$2</code></pre>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,t,url)=>{const safe=sanitizeURL(url);return `<a href="${safe}" target="_blank" rel="noopener">${t}</a>`;})
     .replace(/^(#{1,3})\s+(.+)$/gm,(m,h,t)=>`<h${h.length}>${t}</h${h.length}>`)
-    .replace(/^\*\s+(.+)$/gm,'<li>$1</li>').replace(/^\d+\.\s+(.+)$/gm,'<li>$1</li>')
-    .replace(/(<li>.*<\/li>)/gs,m=>`<ul>${m}</ul>`).replace(/^---+$/gm,'<hr>')
-    .replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>').replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
+    .replace(/^\*\s+(.+)$/gm,'<li>$1</li>')
+    .replace(/^\d+\.\s+(.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs,m=>`<ul>${m}</ul>`)
+    .replace(/^---+$/gm,'<hr>')
+    .replace(/^>\s+(.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/\n{2,}/g,'</p><p>')
+    .replace(/\n/g,'<br>');
   return `<p>${html}</p>`;
 }
-function toast(msg,type='info'){const e=document.createElement('div');e.className='tst';e.innerHTML=(ICONS[type]||ICONSInfo)+`<span>${msg}</span>`;toastEl.appendChild(e);setTimeout(()=>e.remove(),3000);}
-const ICONSInfo='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
-function status(txt,cls){sbadge.innerHTML=`<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>${txt}`;sbadge.className=cls;}
-function errMsg(msg){eban.textContent=msg;eban.classList.add('s');setTimeout(()=>eban.classList.remove('s'),5000);}
-function adjH(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px';}
-function updC(){const l=inp.value.length;cc.textContent=`${l}/4000`;cc.style.color=l>3800?'#f56565':'#8e8ea0';}
-async function copyTxt(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg,'ok')}catch{toast('Error','err')}}
+function isNearBottom(){return chat.scrollHeight-chat.scrollTop-chat.clientHeight<60;}
+function scrollToBottom(){chat.scrollTop=chat.scrollHeight;}
 
-// ---- Funciones IA Texto (igual que antes) ----
-const CORS_PROXIES=['https://api.allorigins.win/raw?url=','https://corsproxy.io/?',''];
+// ============ Almacenamiento ============
+function loadStorage(){
+  try{
+    const saved=localStorage.getItem('athena_chat');
+    if(saved){
+      const data=JSON.parse(saved);
+      if(data.msgs) state.msgs=data.msgs;
+      if(data.ctx) state.ctx=data.ctx;
+      if(data.currentService) state.currentService=data.currentService;
+      if(data.hfToken) state.hfToken=data.hfToken;
+      if(data.imageGallery) state.imageGallery=data.imageGallery;
+    }
+    if(state.currentService) serviceSelect.value=state.currentService;
+    if(state.hfToken) hfTokenInput.value=state.hfToken;
+    updateHFVisibility();
+    renderAllMessages();
+  }catch(e){console.warn(e);}
+}
+function saveStorage(){
+  if(!state.persistentEnabled) return;
+  const toStore={
+    msgs:state.msgs, ctx:state.ctx,
+    currentService:state.currentService, hfToken:state.hfToken,
+    imageGallery:state.imageGallery
+  };
+  localStorage.setItem('athena_chat',JSON.stringify(toStore));
+}
+
+// ============ Renderizado ============
+function createMessageElement(msg){
+  const div=document.createElement('div');
+  div.className=`msg ${msg.role==='u'?'user':'bot'}`;
+  let contentHTML='';
+  if(msg.isImage){
+    contentHTML=`<div>${escapeHTML(msg.text||'')}</div><img src="${sanitizeURL(msg.imageUrl)}" alt="imagen" loading="lazy" onclick="window.open(this.src)">`;
+  } else if(msg.role==='b' && msg.isMarkdown!==false) {
+    contentHTML=parseMarkdown(msg.content);
+  } else {
+    contentHTML=escapeHTML(msg.content).replace(/\n/g,'<br>');
+  }
+  div.innerHTML=`<div class="av">${msg.role==='u'?ICONS.user:ICONS.bot}</div>
+    <div style="flex:1;min-width:0">
+      <div class="mc">${contentHTML}</div>
+      <div class="meta"><span>${msg.time||''}</span>
+        <div class="ma">
+          <button class="mab" data-a="c" aria-label="Copiar">${ICONS.copy}</button>
+          ${msg.role==='b' && !msg.isImage ? `<button class="mab" data-a="r" aria-label="Regenerar">${ICONS.regen}</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  return div;
+}
+function renderAllMessages(){
+  chat.innerHTML='';
+  if(state.msgs.length===0){
+    chat.innerHTML='<div class="wel" id="welcomeScreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h2>Athena Chat IA</h2><p>Texto e imágenes • Genera y comparte</p><p style="font-size:.75rem;margin-top:12px">Comandos: /img [descripción] · /clear · /help</p></div>';
+    return;
+  }
+  for(const msg of state.msgs) chat.appendChild(createMessageElement(msg));
+  scrollToBottom();
+}
+function appendMessage(msg){
+  if(state.msgs.length===0){
+    renderAllMessages();
+  } else {
+    // Si solo hay el mensaje de bienvenida, lo quitamos
+    if(chat.querySelector('#welcomeScreen')) chat.innerHTML='';
+    chat.appendChild(createMessageElement(msg));
+    if(isNearBottom()) scrollToBottom();
+  }
+}
+
+// ============ Lógica de IA ============
+const CORS_PROXIES=['https://corsproxy.io/?','https://api.allorigins.win/raw?url='];
 async function fetchWithCORS(url, options={}){
-  try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),12000);const res=await fetch(url,{...options,signal:ctrl.signal});if(res.ok)return await res.text();}catch(e){}
-  for(const proxy of CORS_PROXIES){if(!proxy)continue;try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),13000);const res=await fetch(proxy+encodeURIComponent(url),{...options,signal:ctrl.signal});if(res.ok)return await res.text();}catch(e){}}
+  try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);const res=await fetch(url,{...options,signal:ctrl.signal});if(res.ok)return await res.text();}catch(e){}
+  for(const proxy of CORS_PROXIES){try{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),10000);const res=await fetch(proxy+encodeURIComponent(url),{...options,signal:ctrl.signal});if(res.ok)return await res.text();}catch(e){}}
   throw new Error('CORS fallback error');
 }
 async function callPollinations(prompt,context,modelType='openai'){
@@ -220,12 +278,11 @@ async function callHuggingFace(prompt,context,token){
   if(!token)throw new Error('Token Hugging Face requerido');
   const ctxText=context.length?`Historial:\n${context.slice(-5).map(m=>`${m.r==='u'?'Humano':'IA'}: ${m.c}`).join('\n')}\n\n`:'';
   const fullPrompt=`${ctxText}Humano: ${prompt}\nIA:`;
-  const model='microsoft/Phi-3-mini-4k-instruct';
-  const response=await fetch(`https://api-inference.huggingface.co/models/${model}`,{
+  const response=await fetch(`https://api-inference.huggingface.co/models/microsoft/Phi-3-mini-4k-instruct`,{
     method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
     body:JSON.stringify({inputs:fullPrompt,parameters:{max_new_tokens:500,temperature:0.7,return_full_text:false}})
   });
-  if(!response.ok){const err=await response.text();throw new Error(`HF Error: ${response.status}`);}
+  if(!response.ok) throw new Error(`HF Error: ${response.status}`);
   const data=await response.json();
   return data[0]?.generated_text?.trim() || "No se pudo generar respuesta.";
 }
@@ -235,7 +292,6 @@ function getLocalResponse(input){
   if(/^(hola|hey|buenos|hi|hello)/i.test(lower)) return pick(['Hola. ¿En qué te ayudo?','Saludos, soy Athena.','Buenas, ¿qué necesitas?']);
   if(/(gracias|thank)/i.test(lower)) return 'De nada. Estoy para ayudarte.';
   if(/(quien eres|que eres|athena)/i.test(lower)) return 'Soy Athena, asistente IA con capacidades de texto e imágenes. Puedo generar imágenes con Pollinations y recibir imágenes que adjuntes.';
-  if(/(codigo|program|js|python)/i.test(lower)) return '**Ejemplo Python:**\n```python\nprint("Hola mundo")\n```\n¿Necesitas ayuda con algún lenguaje específico?';
   if(/(adios|bye|chao)/i.test(lower)) return 'Hasta luego. Vuelve cuando quieras.';
   return 'Interesante. Estoy en modo local, pero puedes activar Pollinations o Hugging Face para respuestas más avanzadas. ¿Algo más?';
 }
@@ -249,7 +305,7 @@ async function callAI(prompt,context,serviceId){
     default: return getLocalResponse(prompt);
   }
 }
-async function testConnection(){ try{await callPollinations('ping',[],'openai');return true;}catch(e){return false;} }
+async function testConnection(){ try{await callPollinations('ping',[],'openai');return true;}catch{return false;} }
 async function findWorkingConnection(){
   status('Conectando','searching');
   const ok=await testConnection();
@@ -257,102 +313,232 @@ async function findWorkingConnection(){
   else{state.online=false;status('Modo offline','off');errMsg('Sin conexión a servicios cloud. Usando respuestas locales.');scheduleReconnect();}
 }
 function scheduleReconnect(){clearTimeout(state.lastReconnectTimer);state.lastReconnectTimer=setTimeout(()=>{if(!state.online&&navigator.onLine)findWorkingConnection();},15000);}
-function pushCtx(role,content){state.ctx.push({r:role,c:content});if(state.ctx.length>12)state.ctx=state.ctx.slice(-12);saveStorage();}
-function addMsgToState(role,content,isMarkdown=true,isImage=false,imageUrl='',text=''){
-  const msg={role:role==='u'?'u':'b',content:content,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),isMarkdown:isMarkdown};
-  if(isImage){msg.isImage=true;msg.imageUrl=imageUrl;msg.text=text||content;}
-  state.msgs.push(msg);
-  if(role==='u')pushCtx('u',content);
-  else pushCtx('b',content);
-  renderMessagesFromState();
+function status(txt,cls){sbadge.innerHTML=`<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>${txt}`;sbadge.className=cls;}
+function errMsg(msg){eban.textContent=msg;eban.classList.add('s');setTimeout(()=>eban.classList.remove('s'),5000);}
+
+// ============ Efecto de escritura ============
+async function typewriterEffect(element, fullText, speed=15){
+  element.textContent='';
+  for(let i=0;i<fullText.length;i++){
+    element.textContent+=fullText.charAt(i);
+    if(i%3===0) await new Promise(r=>setTimeout(r,speed)); // pausa cada 3 caracteres
+  }
+}
+
+// ============ Funciones de mensajes ============
+function pushCtx(role,content){
+  state.ctx.push({r:role,c:content});
+  if(state.ctx.length>12) state.ctx=state.ctx.slice(-12);
   saveStorage();
 }
-function showType(){if(chat.querySelector('.type'))return;const t=document.createElement('div');t.className='msg bot type';t.innerHTML='<span></span><span></span><span></span>';chat.appendChild(t);scrollEnd();}
+function addMsgToState(role,content,isMarkdown=true,isImage=false,imageUrl='',text=''){
+  const msg={
+    role:role==='u'?'u':'b',
+    content:content,
+    time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
+    isMarkdown:isMarkdown,
+    isImage:isImage,
+    imageUrl:imageUrl,
+    text:text||content
+  };
+  state.msgs.push(msg);
+  if(!isImage) pushCtx(role,content);
+  appendMessage(msg);
+  saveStorage();
+  return msg;
+}
+function showType(){
+  if(chat.querySelector('.type')) return;
+  const t=document.createElement('div');
+  t.className='msg bot type';
+  t.innerHTML='<span></span><span></span><span></span>';
+  chat.appendChild(t);
+  if(isNearBottom()) scrollToBottom();
+}
 function hideType(){chat.querySelector('.type')?.remove();}
+
+// ============ Comandos con barra ============
+async function handleSlashCommand(cmd){
+  const parts=cmd.slice(1).trim().split(/\s+(.+)/);
+  const action=parts[0].toLowerCase();
+  const rest=parts[1]||'';
+  switch(action){
+    case 'img':
+      if(!rest) {toast('Uso: /img descripción de la imagen','info'); return false;}
+      await generateImageFromPrompt(rest);
+      return true;
+    case 'clear':
+      clearChat();
+      return true;
+    case 'help':
+      addMsgToState('b','**Comandos disponibles:**\n- `/img descripción` : genera una imagen\n- `/clear` : limpia el chat visual\n- `/help` : muestra esta ayuda',true);
+      return true;
+    default:
+      toast('Comando no reconocido. Usa /help','info');
+      return false;
+  }
+}
+
+// ============ Envío de mensajes ============
 async function send(){
   const txt=inp.value.trim();
-  if(!txt||state.busy)return;
+  if(!txt||state.busy) return;
+  if(txt.startsWith('/')){
+    const handled=await handleSlashCommand(txt);
+    if(handled){ inp.value=''; adjH(); updC(); return; }
+  }
+  // Mensaje normal
   addMsgToState('u',txt,false);
   inp.value='';adjH();updC();
   showType();state.busy=true;sbtn.disabled=true;
   try{
     let resp=await callAI(txt,state.ctx,state.currentService);
-    addMsgToState('b',resp,true);
+    const botMsg=addMsgToState('b','',true);
+    const mcEl=chat.lastChild.querySelector('.mc');
+    await typewriterEffect(mcEl,resp,15);
+    // Actualizar el contenido real en el estado
+    botMsg.content=resp;
+    if(mcEl) mcEl.innerHTML=parseMarkdown(resp);
+    saveStorage();
     if(!state.online&&navigator.onLine) findWorkingConnection();
-  }catch(e){addMsgToState('b','Error en la respuesta. Intenta de nuevo.',true);}
-  finally{hideType();state.busy=false;sbtn.disabled=false;scrollEnd();}
+  }catch(e){
+    addMsgToState('b','Error en la respuesta. Intenta de nuevo.',true);
+  }finally{
+    hideType();state.busy=false;sbtn.disabled=false;
+  }
 }
 async function regenerate(){
   const lastUser=[...state.ctx].reverse().find(m=>m.r==='u');
-  if(!lastUser)return;
+  if(!lastUser) return;
+  // Quitar último mensaje del bot
   state.ctx=state.ctx.filter((m,i,arr)=>!(i===arr.length-1&&m.r==='b'));
-  if(state.msgs.length&&state.msgs[state.msgs.length-1].role==='b')state.msgs.pop();
-  saveStorage();renderMessagesFromState();
+  if(state.msgs.length&&state.msgs[state.msgs.length-1].role==='b') state.msgs.pop();
+  saveStorage(); renderAllMessages();
   state.busy=true;showType();sbtn.disabled=true;
   try{
     let resp=await callAI(lastUser.c,state.ctx,state.currentService);
-    addMsgToState('b',resp,true);
+    const botMsg=addMsgToState('b','',true);
+    const mcEl=chat.lastChild.querySelector('.mc');
+    await typewriterEffect(mcEl,resp,15);
+    botMsg.content=resp;
+    if(mcEl) mcEl.innerHTML=parseMarkdown(resp);
+    saveStorage();
     toast('Respuesta regenerada','ok');
-  }catch(e){addMsgToState('b','Error regenerando.','true');}
-  finally{hideType();state.busy=false;sbtn.disabled=false;}
+  }catch(e){
+    addMsgToState('b','Error regenerando.','true');
+  }finally{
+    hideType();state.busy=false;sbtn.disabled=false;
+  }
 }
 
-// ----- GENERACIÓN DE IMÁGENES -----
+// ============ Generación de imágenes ============
 async function generateImage(prompt){
-  if(!prompt.trim()){toast('Escribe una descripción para la imagen','info'); return null;}
   const encoded=encodeURIComponent(prompt);
   const url=`https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&seed=${Date.now()}`;
-  // Mostrar imagen generada directamente (Pollinations devuelve imagen)
   return url;
 }
-async function handleGenerateImage(){
-  if(state.busy){toast('Espera a que termine la conversación actual','info');return;}
-  const description=prompt('Describe la imagen que quieres generar:');
-  if(!description) return;
-  showType(); state.busy=true; sbtn.disabled=true;
+async function generateImageFromPrompt(prompt){
+  if(!prompt.trim()){toast('Describe la imagen','info');return;}
+  showType();state.busy=true;sbtn.disabled=true;
   try{
-    const imageUrl=await generateImage(description);
-    if(imageUrl){
-      // Añadir mensaje del bot con la imagen generada
-      addMsgToState('b', `Imagen generada: "${description}"`, true, true, imageUrl, `Imagen: ${description}`);
-      toast('Imagen generada','ok');
-    } else throw new Error('No se pudo generar');
-  } catch(e){ toast('Error generando imagen','err'); addMsgToState('b','No se pudo generar la imagen. Intenta con otra descripción.',true);}
-  finally{ hideType(); state.busy=false; sbtn.disabled=false; }
+    const imageUrl=await generateImage(prompt);
+    addMsgToState('b',`Imagen generada: "${prompt}"`,true,true,imageUrl,`Imagen: ${prompt}`);
+    // Guardar en galería
+    state.imageGallery.push({url:imageUrl,desc:prompt});
+    saveStorage();
+    toast('Imagen generada','ok');
+  }catch(e){toast('Error generando imagen','err');addMsgToState('b','No se pudo generar la imagen.',true);}
+  finally{hideType();state.busy=false;sbtn.disabled=false;}
+}
+async function handleGenerateImage(){
+  if(state.busy){toast('Espera a que termine la conversación','info');return;}
+  const description=prompt('Describe la imagen que quieres generar:');
+  if(description) await generateImageFromPrompt(description);
 }
 
-// ----- ENVIAR IMAGEN LOCAL (adjuntar) -----
+// ============ Adjuntar imagen ============
+function handleImageFile(file){
+  if(!file||!file.type.startsWith('image/')) return;
+  const reader=new FileReader();
+  reader.onload=async (ev)=>{
+    const dataUrl=ev.target.result;
+    addMsgToState('u','Imagen adjuntada',false,true,dataUrl,'');
+    addMsgToState('b','Imagen recibida. No tengo visión artificial, pero puedes pedirme que genere imágenes similares.',true);
+    toast('Imagen adjuntada','ok');
+  };
+  reader.readAsDataURL(file);
+}
 function handleAttachImage(){
   const input=document.createElement('input');
-  input.type='file';
-  input.accept='image/*';
-  input.onchange=async (e)=>{
-    const file=e.target.files[0];
-    if(!file) return;
-    const reader=new FileReader();
-    reader.onload=async (ev)=>{
-      const dataUrl=ev.target.result;
-      // Mostrar imagen en el chat como mensaje del usuario
-      addMsgToState('u', 'Imagen adjuntada', false, true, dataUrl, '');
-      // Respuesta del bot "recibiendo"
-      addMsgToState('b', 'Imagen recibida. No tengo visión artificial, pero puedes pedirme que genere imágenes similares.', true);
-      toast('Imagen adjuntada','ok');
-    };
-    reader.readAsDataURL(file);
-  };
+  input.type='file';input.accept='image/*';
+  input.onchange=e=>{if(e.target.files[0]) handleImageFile(e.target.files[0]);};
   input.click();
 }
+// Drag & drop
+chat.addEventListener('dragover',e=>{e.preventDefault();chat.classList.add('dragover');});
+chat.addEventListener('dragleave',()=>chat.classList.remove('dragover'));
+chat.addEventListener('drop',e=>{
+  e.preventDefault();
+  chat.classList.remove('dragover');
+  const file=e.dataTransfer.files[0];
+  if(file) handleImageFile(file);
+});
 
-// UI helpers
+// ============ Galería de imágenes ============
+function showGallery(){
+  if(!state.imageGallery.length){toast('No hay imágenes generadas aún','info');return;}
+  openModal(false); // Cierra menú si está abierto
+  const galleryOverlay=document.createElement('div');
+  galleryOverlay.className='mover s';
+  galleryOverlay.innerHTML=`
+    <div class="mcont" style="max-width:600px">
+      <div class="mhead"><h3>Galería de imágenes (${state.imageGallery.length})</h3>
+        <button class="ibtn close-gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="img-gallery">
+        ${state.imageGallery.map((img,i)=>`<img src="${sanitizeURL(img.url)}" alt="${escapeHTML(img.desc)}" onclick="window.open('${sanitizeURL(img.url)}')" title="${escapeHTML(img.desc)}">`).join('')}
+      </div>
+    </div>`;
+  document.body.appendChild(galleryOverlay);
+  galleryOverlay.querySelector('.close-gallery').onclick=()=>galleryOverlay.remove();
+  galleryOverlay.onclick=e=>{if(e.target===galleryOverlay) galleryOverlay.remove();};
+}
+
+// ============ UI helpers ============
+function adjH(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px';}
+function updC(){const l=inp.value.length;cc.textContent=`${l}/4000`;cc.style.color=l>3800?'#f56565':'#8e8ea0';}
+async function copyTxt(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg,'ok');}catch{toast('Error al copiar','err');}}
 function updateHFVisibility(){hfTokenDiv.style.display=serviceSelect.value==='huggingface'?'block':'none';}
 function openModal(s){mover.classList.toggle('s',s);document.body.style.overflow=s?'hidden':'';}
-function newChat(){if(state.busy||(state.msgs.length&&!confirm('¿Nueva conversación? Se guardará la actual.')))return;state.msgs=[];state.ctx=[];saveStorage();renderMessagesFromState();openModal(false);toast('Nueva conversación','ok');inp.focus();}
-function clearChat(){if(state.busy||!confirm('¿Limpiar chat visual? El historial se perderá en pantalla.'))return;state.msgs=[];state.ctx=[];saveStorage();renderMessagesFromState();openModal(false);toast('Chat limpiado','ok');}
-function clearStorageAll(){if(confirm('Eliminar TODOS los datos guardados (historial, preferencias). ¿Continuar?')){localStorage.removeItem('athena_chat');state.msgs=[];state.ctx=[];state.hfToken='';hfTokenInput.value='';renderMessagesFromState();toast('Datos locales eliminados','ok');}}
-function exportChat(){if(!state.msgs.length){toast('No hay mensajes','info');return;}const c=state.msgs.map(m=>`[${m.time}] ${m.role==='u'?'Tú':'Athena'}:\n${m.content}\n`).join('---\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));a.download=`athena_${new Date().toISOString().slice(0,10)}.txt`;a.click();openModal(false);toast('Exportado','ok');}
-async function copyAll(){if(!state.msgs.length){toast('No hay mensajes','info');return;}await copyTxt(state.msgs.map(m=>`${m.role==='u'?'Tú':'Athena'}: ${m.content}`).join('\n\n'),'Chat copiado');openModal(false);}
-
-// Eventos
+function newChat(){
+  if(state.busy||(state.msgs.length&&!confirm('¿Nueva conversación? Se guardará la actual.')))return;
+  state.msgs=[];state.ctx=[];saveStorage();renderAllMessages();openModal(false);toast('Nueva conversación','ok');inp.focus();
+}
+function clearChat(){
+  if(state.busy||!confirm('¿Limpiar chat visual? El historial se perderá en pantalla.'))return;
+  state.msgs=[];state.ctx=[];saveStorage();renderAllMessages();openModal(false);toast('Chat limpiado','ok');
+}
+function clearStorageAll(){
+  if(confirm('Eliminar TODOS los datos guardados (historial, preferencias, galería). ¿Continuar?')){
+    localStorage.removeItem('athena_chat');
+    state.msgs=[];state.ctx=[];state.hfToken='';state.imageGallery=[];hfTokenInput.value='';
+    renderAllMessages();toast('Datos locales eliminados','ok');
+  }
+}
+function exportChat(){
+  if(!state.msgs.length){toast('No hay mensajes','info');return;}
+  const c=state.msgs.map(m=>`[${m.time}] ${m.role==='u'?'Tú':'Athena'}:\n${m.content}\n`).join('---\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));
+  a.download=`athena_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();openModal(false);toast('Exportado','ok');
+}
+async function copyAll(){
+  if(!state.msgs.length){toast('No hay mensajes','info');return;}
+  await copyTxt(state.msgs.map(m=>`${m.role==='u'?'Tú':'Athena'}: ${m.content}`).join('\n\n'),'Chat copiado');
+  openModal(false);
+}
+// ============ Eventos ============
 sbtn.onclick=send;
 inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}};
 inp.oninput=()=>{adjH();updC();};
@@ -360,20 +546,45 @@ $('#mbtn').onclick=()=>openModal(true);
 $('#mclose').onclick=()=>openModal(false);
 mover.onclick=e=>{if(e.target===mover)openModal(false);};
 $('#nchat').onclick=newChat;
+galleryBtn.onclick=showGallery;
 $('#eport').onclick=exportChat;
 $('#call').onclick=copyAll;
 $('#cchat').onclick=clearChat;
 $('#clearStorage').onclick=clearStorageAll;
-serviceSelect.onchange=()=>{state.currentService=serviceSelect.value;updateHFVisibility();saveStorage();toast(`Servicio cambiado a ${serviceSelect.options[serviceSelect.selectedIndex].text}`,'ok');};
+serviceSelect.onchange=()=>{state.currentService=serviceSelect.value;updateHFVisibility();saveStorage();toast(`Servicio: ${serviceSelect.options[serviceSelect.selectedIndex].text}`,'ok');};
 hfTokenInput.onchange=()=>{state.hfToken=hfTokenInput.value.trim();saveStorage();toast('Token HF actualizado','ok');};
 attachBtn.onclick=handleAttachImage;
 generateBtn.onclick=handleGenerateImage;
-chat.onclick=e=>{const btn=e.target.closest('.mab');if(!btn)return;const mc=btn.closest('.msg').querySelector('.mc');if(btn.dataset.a==='c')copyTxt(mc.textContent||mc.innerText,'Copiado');if(btn.dataset.a==='r')regenerate();};
-let hTimer;chat.ontouchstart=e=>{const mc=e.target.closest('.mc');if(!mc)return;hTimer=setTimeout(()=>{copyTxt(mc.textContent||mc.innerText,'Copiado');},600);};chat.ontouchend=chat.ontouchmove=()=>clearTimeout(hTimer);
-window.ononline=()=>{if(!state.online)findWorkingConnection();};
+chat.onclick=e=>{
+  const btn=e.target.closest('.mab');
+  if(!btn) return;
+  const mc=btn.closest('.msg').querySelector('.mc');
+  if(btn.dataset.a==='c') copyTxt(mc.textContent||mc.innerText,'Copiado');
+  if(btn.dataset.a==='r') regenerate();
+};
+// Long press para copiar
+let hTimer;
+chat.addEventListener('touchstart',e=>{
+  const mc=e.target.closest('.mc');
+  if(!mc) return;
+  hTimer=setTimeout(()=>{copyTxt(mc.textContent||mc.innerText,'Copiado');},600);
+});
+chat.addEventListener('touchend',()=>clearTimeout(hTimer));
+chat.addEventListener('touchmove',()=>clearTimeout(hTimer));
+window.ononline=()=>{if(!state.online) findWorkingConnection();};
+window.addEventListener('beforeunload',e=>{
+  if(state.msgs.length>0) e.returnValue='Tienes una conversación activa. ¿Salir?';
+});
+// Reintentar conexión al hacer clic en el badge
+sbadge.onclick=()=>{if(!state.online||sbadge.className==='off') findWorkingConnection();};
 
-// Inicializar
-loadStorage();updateHFVisibility();findWorkingConnection();adjH();updC();inp.focus();
+// ============ Inicio ============
+loadStorage();
+updateHFVisibility();
+findWorkingConnection();
+adjH();
+updC();
+inp.focus();
 </script>
 </body>
 </html>
